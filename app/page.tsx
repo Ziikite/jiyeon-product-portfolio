@@ -23,8 +23,44 @@ type Project = {
 
 const projects: Project[] = [
   {
-    id: "gln-faq",
+    id: "woowa-group-order",
     no: "01",
+    company: "Woowa Brothers",
+    domain: "Foodtech",
+    year: "2026",
+    title: "함께 주문하는 순간의\n보이지 않는 상태를 찾다",
+    summary: "대표자와 참여자 8명의 온라인 UT로 기능 발견부터 메뉴 확정, 주문, 더치페이까지 이어지는 흐름의 단절을 구조화했습니다.",
+    role: "UX Research · UT Planning · Facilitation · Analysis",
+    metric: "8 users",
+    metricLabel: "대표자·참여자 UT",
+    accent: "commerce",
+    problem: "함께 주문하는 상황에서도 사용자는 기능을 바로 떠올리지 못했습니다. 진입 후에는 대표자가 참여자의 메뉴 선택 상태를 알기 어려웠고, 참여자는 ‘메뉴 확정하기’의 의미를 이해하지 못했습니다. 더치페이에서도 요청 전달 방식과 정산 완료 상태가 명확하지 않았습니다.",
+    evidence: ["대표자 4명·참여자 4명 온라인 UT", "Live 서비스 + 더치페이 Prototype", "고객 목표 매핑·세션 관찰 기록"],
+    decision: "대표자와 참여자의 목표를 분리해 전체 여정을 검증하고, 기능 발견·참여 상태·메뉴 확정·정산 완료의 네 구간을 핵심 개선 지점으로 정의했습니다. 진입 단서를 강화하고, 누가 선택 중인지와 다음 행동을 명시하며, 정산 요청과 수령 상태가 이어져 보이도록 개선 방향을 구조화했습니다.",
+    outcome: "기능 인지도 부족, 참여 상태의 불투명성, 생소한 ‘메뉴 확정’ 용어, 더치페이 완료 처리의 불확실성을 주요 사용성 이슈로 도출했습니다. 발견을 화면 단위가 아닌 대표자와 참여자의 연결된 주문 여정으로 정리해 개선 우선순위를 제시했습니다.",
+    tags: ["Usability Test", "Foodtech", "Journey Mapping"],
+  },
+  {
+    id: "woowa-commerce-benefits",
+    no: "02",
+    company: "Woowa Brothers",
+    domain: "Commerce",
+    year: "2026",
+    title: "혜택이 있어도 찾지 못하는\n커머스 탐색 경험",
+    summary: "0.40%의 진입 데이터와 오프라인 UT를 연결해 혜택 발견, 셀러 비교, 쿠폰 수령 확신이 끊기는 원인을 파악했습니다.",
+    role: "UX Research · Offline UT · Journey Analysis",
+    metric: "0.40%",
+    metricLabel: "혜택 모아보기 진입률",
+    accent: "commerce",
+    problem: "혜택을 한곳에서 비교하고 받게 하려는 지면이었지만 사용자는 ‘혜택 모아보기’ 버튼을 발견하지 못했습니다. 진입 후에도 서로 다른 유형의 셀러가 섞여 비교가 어려웠고, 셀러 홈을 오가며 쿠폰을 다시 확인해야 했습니다. 쿠폰 수령 상태가 지면마다 다르게 보여 혜택을 모두 받았는지 확신하기도 어려웠습니다.",
+    evidence: ["2026.06 진입 데이터 631,763명·0.40%", "커머스 이용자 4명 오프라인 UT", "Live 탐색 여정·쿠폰 노출 정책 분석"],
+    decision: "고객 목표를 ‘혜택 발견–조건 비교–쿠폰 수령 확인’으로 재정의했습니다. 셀러 유형 필터와 최소주문금액 기준 비교, 지면 간 일관된 쿠폰 보유 상태, 한 화면 안에서 끝나는 탐색 구조를 핵심 개선 방향으로 정리했습니다.",
+    outcome: "버튼 발견 실패, 셀러 구분의 어려움, 반복적인 지면 이동, 쿠폰 수령 상태의 불일치라는 네 가지 핵심 이슈를 도출했습니다. 사용자가 혜택의 크기뿐 아니라 적용 조건과 최종 지불 금액을 함께 비교한다는 판단 기준도 확인했습니다.",
+    tags: ["Commerce UX", "Behavior Data", "Usability Test"],
+  },
+  {
+    id: "gln-faq",
+    no: "03",
     company: "GLN International",
     domain: "Fintech",
     year: "2025–26",
@@ -42,7 +78,7 @@ const projects: Project[] = [
   },
   {
     id: "clas",
-    no: "02",
+    no: "04",
     company: "TmaxCloud",
     domain: "Cloud",
     year: "2024",
@@ -60,7 +96,7 @@ const projects: Project[] = [
   },
   {
     id: "migration",
-    no: "03",
+    no: "05",
     company: "TmaxCloud",
     domain: "B2B SaaS",
     year: "2024",
@@ -78,7 +114,7 @@ const projects: Project[] = [
   },
   {
     id: "voice",
-    no: "04",
+    no: "06",
     company: "GM Korea",
     domain: "Mobility",
     year: "2022–23",
@@ -96,7 +132,7 @@ const projects: Project[] = [
   },
   {
     id: "ev",
-    no: "05",
+    no: "07",
     company: "GM Korea",
     domain: "Mobility",
     year: "2022",
@@ -114,12 +150,16 @@ const projects: Project[] = [
   },
 ];
 
-const filters = ["All", "Fintech", "Cloud", "Mobility"];
+const filters = ["All", "Commerce", "Fintech", "Cloud", "Mobility"];
 
 export default function Home() {
   const [filter, setFilter] = useState("All");
   const [selected, setSelected] = useState<Project | null>(null);
-  const visible = projects.filter((p) => filter === "All" || (filter === "Cloud" ? ["Cloud", "B2B SaaS"].includes(p.domain) : p.domain === filter));
+  const visible = projects.filter((p) =>
+    filter === "All" ||
+    (filter === "Commerce" ? ["Commerce", "Foodtech"].includes(p.domain) :
+      filter === "Cloud" ? ["Cloud", "B2B SaaS"].includes(p.domain) : p.domain === filter)
+  );
 
   useEffect(() => {
     document.body.style.overflow = selected ? "hidden" : "";
@@ -158,7 +198,7 @@ export default function Home() {
 
       <section className="signal-strip" aria-label="핵심 역량">
         <div><b>3,929</b><span>VOC 분석</span></div>
-        <div><b>5</b><span>Selected projects</span></div>
+        <div><b>7</b><span>Selected projects</span></div>
         <div><b>3×</b><span>전환율 개선</span></div>
         <div><b>End-to-end</b><span>Research to launch</span></div>
       </section>
@@ -219,6 +259,11 @@ export default function Home() {
           <h2>리서치에서 정책과<br />출시 가능한 화면까지.</h2>
         </div>
         <div className="timeline">
+          <article>
+            <span className="period">2026.07 — Present</span>
+            <div><h3>우아한형제들</h3><p>UX Researcher</p></div>
+            <p>함께주문의 대표자·참여자 8명 UT와 커머스 ‘혜택 모아보기’ UT를 설계·진행했습니다. 행동 데이터와 세션 관찰을 연결해 기능 발견, 상태 인지, 혜택 비교와 쿠폰 수령 경험의 개선 과제를 도출했습니다.</p>
+          </article>
           <article>
             <span className="period">2025.09 — 2026.03</span>
             <div><h3>GLN International</h3><p>Product Designer</p></div>
