@@ -134,7 +134,7 @@ export default function Home() {
   return (
     <main>
       <nav className="nav" aria-label="주요 메뉴">
-        <a className="wordmark" href="#top" aria-label="홈으로">JY<span>·</span></a>
+        <a className="wordmark" href="#top" aria-label="홈으로">Jiyeon Kim</a>
         <div className="nav-links">
           <a href="#work">Work</a>
           <a href="#about">About</a>
@@ -144,21 +144,15 @@ export default function Home() {
       </nav>
 
       <section className="hero" id="top">
-        <div className="hero-kicker"><span className="status-dot" />Available for new opportunities · Seoul</div>
+        <div className="hero-kicker"><span className="status-dot" />Service Planner · Seoul</div>
         <h1>
           복잡한 문제에서<br />
-          <span className="serif">사용자의 맥락</span>을 찾고,<br />
+          사용자의 맥락을 찾고,<br />
           실행 가능한 경험으로 만듭니다.
         </h1>
         <div className="hero-bottom">
           <p>정량 데이터와 사용자의 목소리를 연결해<br className="desktop" /> 서비스의 다음 장면을 설계하는 기획자 김지연입니다.</p>
-          <a className="round-link" href="#work" aria-label="프로젝트 보기"><span>↓</span></a>
-        </div>
-        <div className="hero-orbit" aria-hidden="true">
-          <span className="orbit-label one">RESEARCH</span>
-          <span className="orbit-label two">STRATEGY</span>
-          <span className="orbit-label three">EXECUTION</span>
-          <div className="orbit-core">Why<br /><i>→</i><br />What</div>
+          <a className="round-link" href="#work">프로젝트 보기 <span>↓</span></a>
         </div>
       </section>
 
@@ -205,7 +199,7 @@ export default function Home() {
       <section className="approach" id="about">
         <div className="approach-copy">
           <p className="eyebrow">How I work</p>
-          <h2>데이터를 읽고,<br /><span className="serif">맥락을 연결하고,</span><br />끝까지 실행합니다.</h2>
+          <h2>데이터를 읽고,<br />맥락을 연결하고,<br />끝까지 실행합니다.</h2>
         </div>
         <div className="approach-list">
           <div><span>01</span><h3>Evidence first</h3><p>감으로 결론내리지 않습니다. 행동 데이터와 사용자의 언어를 함께 보며 문제의 크기와 원인을 분리합니다.</p></div>
@@ -244,7 +238,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <p>좋은 질문에서<br /><span className="serif">좋은 서비스가 시작됩니다.</span></p>
+        <p>좋은 질문에서<br />좋은 서비스가 시작됩니다.</p>
         <div className="footer-row"><a href="mailto:thingzwell@gmail.com">thingzwell@gmail.com ↗</a><span>Jiyeon Kim · Service Planner</span><span>© 2026</span></div>
       </footer>
 
