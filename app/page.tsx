@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
 import { profile, career, education, skills, awards, projects } from "@/app/lib/data";
 
 export default function Home() {
@@ -114,8 +113,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </main>
   );
 }

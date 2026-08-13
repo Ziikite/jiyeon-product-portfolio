@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -132,8 +131,6 @@ export default async function ProjectPage({
           <h4>{next.title.replace("\n", " ")}</h4>
         </Link>
       </nav>
-
-      <Footer />
     </main>
   );
 }
