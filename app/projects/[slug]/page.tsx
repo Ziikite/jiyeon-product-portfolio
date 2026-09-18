@@ -2,6 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Header from "@/app/components/Header";
+import ProjectToc from "@/app/components/ProjectToc";
+import InquiryPieChart from "@/app/components/InquiryPieChart";
+import HighlightOnScroll from "@/app/components/HighlightOnScroll";
+import ProblemCascade from "@/app/components/ProblemCascade";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -35,24 +39,31 @@ export default async function ProjectPage({
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
 
+  const tocItems = project.sections.map((section, i) => ({
+    id: `section-${i}`,
+    label: section.label.includes("·") ? section.label.split("·")[1].trim() : section.label,
+  }));
+
   return (
     <main>
       <Header />
+      <ProjectToc items={tocItems} />
+      <Link className="back-link" href="/#work">
+        ← 전체 프로젝트
+      </Link>
 
-      <div className="project-header">
-        <div className="wrap">
-          <Link className="back-link" href="/#work">
-            ← 전체 프로젝트
-          </Link>
-        </div>
+      <div className="project-body">
+      <div className="wrap project-cover">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="project-cover-image" src={project.coverImage} alt="" />
       </div>
 
       <section className="project-hero">
         <div className="wrap">
-          <h1>{project.title}</h1>
           <p className="project-byline">
             {project.no} — {project.org} · <span className="domain-tag">{project.domain}</span>
           </p>
+          <h1>{project.title}</h1>
           <p className="summary">{project.summary}</p>
 
           <div className="project-facts">
@@ -74,28 +85,21 @@ export default async function ProjectPage({
         </div>
       </section>
 
-      <div className="wrap project-cover">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="project-cover-image" src={project.image} alt="" />
-      </div>
-
-      <div className="metric-strip">
-        {project.metrics.map((metric) => (
-          <div key={metric.label}>
-            <strong>{metric.value}</strong>
-            <span>{metric.label}</span>
-          </div>
-        ))}
-      </div>
-
       <div className="case-sections">
         <div className="wrap" style={{ padding: 0 }}>
-          {project.sections.map((section) => (
-            <div className="case-section" key={section.label}>
+          {project.sections.map((section, i) => (
+            <div className="case-section" id={`section-${i}`} key={section.label}>
               <span className="case-label">{section.label}</span>
               <div>
                 <h3>{section.heading}</h3>
-                <p>{section.body}</p>
+                {project.slug === "gln-faq" && i === 0 ? (
+                  <HighlightOnScroll
+                    text={section.body}
+                    highlight="오류, 환불, 한도 초과 등의 문제를 찾기 어려워 고객센터를 찾는 경우가 많았습니다."
+                  />
+                ) : (
+                  <p>{section.body}</p>
+                )}
                 {section.list && (
                   <ul className="case-list">
                     {section.list.map((item) => (
@@ -103,9 +107,15 @@ export default async function ProjectPage({
                     ))}
                   </ul>
                 )}
-                {section.image && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="case-image" src={section.image} alt="" />
+                {project.slug === "gln-faq" && i === 0 ? (
+                  <InquiryPieChart />
+                ) : project.slug === "gln-faq" && section.label === "02 · Problem" ? (
+                  <ProblemCascade />
+                ) : (
+                  section.image && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img className="case-image" src={section.image} alt="" />
+                  )
                 )}
               </div>
             </div>
@@ -131,6 +141,7 @@ export default async function ProjectPage({
           <h4>{next.title.replace("\n", " ")}</h4>
         </Link>
       </nav>
+      </div>
     </main>
   );
 }

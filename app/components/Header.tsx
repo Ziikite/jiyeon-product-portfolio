@@ -11,7 +11,10 @@ export default function Header() {
         </Link>
         <nav className="nav-links" aria-label="주요 메뉴">
           <Link href="/#work">Work</Link>
-          <Link href="/#career">Career</Link>
+          <Link href="/about">About</Link>
+          <a href={profile.resumeUrl} target="_blank" rel="noopener noreferrer">
+            Resume
+          </a>
           <a className="nav-contact" href={`mailto:${profile.email}`}>
             Let&apos;s talk ↗
           </a>
