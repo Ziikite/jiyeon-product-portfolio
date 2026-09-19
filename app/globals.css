@@ -1083,3 +1083,29 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
   .vb-num, .vb-reason, .vb-card, .vb-result, .vb-arrow { opacity: 1 !important; transform: none !important; animation: none !important; }
   .vb-meter { transform: scaleX(var(--pct)) !important; }
 }
+
+/* GM voice UX: Problem (shadowing photo with fading bubbles, 5-of-6 ignore ratio) */
+.sh { margin: 28px 0 0; }
+.sh-stage { position: relative; aspect-ratio: 2000 / 947; }
+.sh-photo { position: absolute; left: 0; bottom: 0; width: 71.7%; height: auto; border-radius: 14px; display: block; }
+.sh-bubbles { position: absolute; left: 26%; top: 5%; width: 62.5%; display: flex; flex-direction: column; gap: 14px; }
+.case-section .sh-bubble { max-width: none; margin: 0; padding: 13px 18px; border: 1px solid #e4e4e4; border-radius: 16px; background: #fff; font-size: 13.5px; line-height: 1.55; letter-spacing: -.01em; color: #1d1d1b; box-shadow: 0 12px 30px rgba(0,0,0,.2); opacity: 0; transform: translateY(12px); transition: opacity .7s ease, transform .7s cubic-bezier(.22,.8,.2,1); }
+.sh-bubble:first-child { width: 80%; }
+.sh.is-on .sh-bubble { opacity: 1; transform: translateY(0); transition-delay: calc(var(--i) * .7s + .3s); }
+.sh:not(.is-on) .sh-bubble { transition: none; }
+.case-section .sh-caption { max-width: none; margin: 12px 0 0; text-align: center; font-size: 13px; color: #8a8f98; }
+.ig { margin-top: 30px; }
+.ig-svg { display: block; width: 100%; height: auto; }
+.ig-rise { transform-box: fill-box; transform-origin: center bottom; transform: scaleY(0); }
+.ig.is-on .ig-rise { animation: ig-fill .8s cubic-bezier(.4,.1,.2,1) calc(var(--i) * .4s + .3s) both; }
+@keyframes ig-fill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.ig-rest { opacity: 0; transition: opacity .5s ease; }
+.ig.is-on .ig-rest { opacity: 1; transition-delay: .3s; }
+.ig:not(.is-on) .ig-rest { transition: none; }
+.ig-hl { fill: rgba(255,227,0,.8); transform-box: fill-box; transform-origin: left center; transform: scaleX(0); }
+.ig.is-on .ig-hl { animation: ig-mark 1s ease 2.7s both; }
+@keyframes ig-mark { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .sh-bubble, .ig-rest { opacity: 1 !important; transform: none !important; }
+  .ig-rise, .ig-hl { transform: none !important; animation: none !important; }
+}

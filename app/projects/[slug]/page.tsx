@@ -26,6 +26,7 @@ import ToolSolution from "@/app/components/ToolSolution";
 import ExpertGapProblem from "@/app/components/ExpertGapProblem";
 import MonitorSolution from "@/app/components/MonitorSolution";
 import VoiceBackground from "@/app/components/VoiceBackground";
+import ShadowingProblem from "@/app/components/ShadowingProblem";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -142,6 +143,8 @@ export default async function ProjectPage({
                   <SolutionVisual body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
                   <OutcomeVisual body={section.body} />
+                ) : project.slug === "gm-voice-ux" && section.label === "02 · Problem" && section.list ? (
+                  <ShadowingProblem body={section.body} quotes={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "01 · Background" ? (
                   <VoiceBackground body={section.body} />
                 ) : project.slug === "cloud-migration" && section.label === "07 · Problem 3" ? (
