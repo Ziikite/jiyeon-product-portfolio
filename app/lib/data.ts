@@ -470,7 +470,7 @@ export const projects: Project[] = [
           "\"줄줄줄 나열만 하니까 집중도 안되고 잘 들리지도 않아요.\" / \"무슨 말인지 몰라요. 그냥 화면 봐요.\" → 안내의 이유 및 설명 없이 반복 → 목적 없는 정보는 인지 부하 유발",
           "\"다음에 뭐하란 말인지 모르겠어요.\" → 앞뒤 문맥 없이 단일 문장만 재생 → 사용자 플로우와 단절되면 소음으로 인식",
         ],
-        image: "/projects/detail/gm-voice-ux-3.png",
+        image: "/projects/detail/gm-voice-ux-interview.svg",
       },
       {
         label: "04 · Strategy",

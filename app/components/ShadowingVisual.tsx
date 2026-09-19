@@ -21,7 +21,7 @@ const CAPTION_SHIFT = { x: 5.5, y: -100 };
 const IGNORED = 5; // the first five people fill up; the sixth stays gray
 
 // Two balanced lines (preferring a break after "?" or ",") so the bubble hugs its text and both side paddings match.
-function balance(text: string): [string, string] | null {
+export function balance(text: string): [string, string] | null {
   const mid = text.length / 2;
   let best = -1;
   let bestScore = Infinity;

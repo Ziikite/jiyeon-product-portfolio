@@ -27,6 +27,7 @@ import ExpertGapProblem from "@/app/components/ExpertGapProblem";
 import MonitorSolution from "@/app/components/MonitorSolution";
 import VoiceBackground from "@/app/components/VoiceBackground";
 import ShadowingProblem from "@/app/components/ShadowingProblem";
+import CauseSection from "@/app/components/CauseSection";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -143,6 +144,8 @@ export default async function ProjectPage({
                   <SolutionVisual body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
                   <OutcomeVisual body={section.body} />
+                ) : project.slug === "gm-voice-ux" && section.label === "03 · Cause" && section.list && section.image ? (
+                  <CauseSection body={section.body} list={section.list} image={section.image} />
                 ) : project.slug === "gm-voice-ux" && section.label === "02 · Problem" && section.list ? (
                   <ShadowingProblem body={section.body} quotes={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "01 · Background" ? (
