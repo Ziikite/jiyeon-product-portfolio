@@ -481,7 +481,6 @@ export const projects: Project[] = [
           "정보 품질 관점 — 편안함 : 말이 길지 않고, 예측 가능한 구조로 인지 부하 감소 유도",
           "서비스 품질 관점 — 매력 : 음성 기능을 지속적으로 쓰고 싶게 만드는 감성적 경험",
         ],
-        image: "/projects/detail/gm-voice-ux-4.png",
       },
       {
         label: "05 · Solution 1",
