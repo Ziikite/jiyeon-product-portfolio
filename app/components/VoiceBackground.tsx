@@ -23,7 +23,7 @@ type Slice = {
 };
 
 const SATISFACTION: Slice[] = [
-  { key: "unsat", label: "불만족 ~ 보통", value: 52, start: 0, fill: YELLOW, ink: "#111", yellow: true, lx: 0.4, ly: -0.3 },
+  { key: "unsat", label: "불만족 ~ 보통", value: 52, start: 0, fill: YELLOW, ink: "#111", yellow: true, lx: 0.4, ly: -0.42 },
   { key: "sat", label: "만족", value: 48, start: 52, fill: "#c8cbd0", ink: "#fff", lx: -0.42, ly: -0.05 },
 ];
 const USAGE: Slice[] = [
@@ -71,10 +71,20 @@ type Tip = { text: string; x: number; y: number };
 
 function PieNumber({ s, cx, cy, run, delay }: { s: Slice; cx: number; cy: number; run: boolean; delay: number }) {
   const shown = useCount(s.value, run, delay, 1000);
+  const x = cx + s.lx * R;
+  const y = cy + s.ly * R + (s.yellow ? 12 : 8);
   return (
-    <text className="vb-num" x={cx + s.lx * R} y={cy + s.ly * R + 10} textAnchor="middle" fill={s.ink}>
-      {shown}%
-    </text>
+    <g className={`vb-num${s.yellow ? " is-main" : " is-sub"}`} fill={s.ink} pointerEvents="none">
+      <text x={x} y={y} textAnchor="middle">
+        {shown}
+        <tspan className="vb-pct">%</tspan>
+      </text>
+      {s.yellow && (
+        <text className="vb-label" x={x} y={y + 28} textAnchor="middle">
+          {s.label}
+        </text>
+      )}
+    </g>
   );
 }
 
