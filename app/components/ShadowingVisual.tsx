@@ -97,7 +97,7 @@ export default function ShadowingVisual({ body, quotes, photo, art }: { body: st
       </figure>
 
       <div ref={ratioRef as React.RefObject<HTMLDivElement>} className={`ig${ratioOn ? " is-on" : ""}`}>
-        <svg className="ig-svg" viewBox="0 50 799 250" role="img" aria-label="음성 안내 무시 비율: 6명 중 5명은 음성 안내를 무시하는 모습 확인">
+        <svg className="ig-svg" viewBox="80 58 640 242" role="img" aria-label="음성 안내 무시 비율: 6명 중 5명은 음성 안내를 무시하는 모습 확인">
           <defs>
             {SLOTS.slice(0, IGNORED).map((s, i) => (
               <clipPath key={i} id={`ig-clip-${i}`}>
