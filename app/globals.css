@@ -1279,3 +1279,6 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
   .rb-mark { background-size: 100% 100% !important; }
   .rb-wave i { animation: none !important; }
 }
+
+/* small chip above a section title */
+.case-chip { display: inline-block; margin-bottom: 10px; padding: 4px 12px; border-radius: 999px; background: #FFE300; font-size: 12.5px; font-weight: 800; letter-spacing: -.01em; line-height: 1.4; color: #1d1d1b; }

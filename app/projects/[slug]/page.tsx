@@ -132,7 +132,17 @@ export default async function ProjectPage({
             >
               <span className="case-label">{section.label}</span>
               <div>
-                <h3>{section.heading}</h3>
+                {(() => {
+                  // gm-voice-ux Solution 1: "경로 브리핑 — …" reads better as a small chip above the title
+                  const [chip, ...rest] =
+                    project.slug === "gm-voice-ux" && section.label === "06 · Solution 1" ? section.heading.split(" — ") : [null, section.heading];
+                  return (
+                    <>
+                      {chip && rest.length > 0 && <span className="case-chip">{chip}</span>}
+                      <h3>{chip && rest.length > 0 ? rest.join(" — ") : section.heading}</h3>
+                    </>
+                  );
+                })()}
                 {project.slug === "gln-faq" && section.label === "04 · Strategy" && section.list ? (
                   <StrategySection
                     body={section.body}
