@@ -23,14 +23,14 @@ type Slice = {
 };
 
 const SATISFACTION: Slice[] = [
-  { key: "unsat", label: "불만족 ~ 보통", value: 52, start: 0, fill: YELLOW, ink: "#111", yellow: true, lx: 0.4, ly: -0.42 },
-  { key: "sat", label: "만족", value: 48, start: 52, fill: "#c8cbd0", ink: "#fff", lx: -0.42, ly: -0.05 },
+  { key: "unsat", label: "불만족 ~ 보통", value: 52, start: 0, fill: YELLOW, ink: "#111", yellow: true, lx: 0.52, ly: -0.42 },
+  { key: "sat", label: "만족", value: 48, start: 52, fill: "#c8cbd0", ink: "#fff", lx: -0.58, ly: -0.04 },
 ];
 const USAGE: Slice[] = [
-  { key: "none", label: "사용 경험 없음", value: 50, start: 0, fill: YELLOW, ink: "#111", yellow: true, lx: 0.46, ly: -0.05 },
-  { key: "bt", label: "블루투스 사용", value: 20, start: 50, fill: "#aab1b9", ink: "#111", lx: -0.34, ly: 0.42 },
-  { key: "phone", label: "스마트폰으로 사용", value: 20, start: 70, fill: "#c8cbd0", ink: "#111", lx: -0.55, ly: -0.24 },
-  { key: "etc", label: "기타", value: 10, start: 90, fill: "#dfe0e3", ink: "#111", lx: -0.22, ly: -0.72 },
+  { key: "none", label: "사용 경험 없음", value: 50, start: 0, fill: YELLOW, ink: "#111", yellow: true, lx: 0.52, ly: -0.05 },
+  { key: "bt", label: "블루투스 사용", value: 20, start: 50, fill: "#aab1b9", ink: "#111", lx: -0.35, ly: 0.49 },
+  { key: "phone", label: "스마트폰으로 사용", value: 20, start: 70, fill: "#c8cbd0", ink: "#111", lx: -0.57, ly: -0.19 },
+  { key: "etc", label: "기타", value: 10, start: 90, fill: "#dfe0e3", ink: "#111", lx: -0.22, ly: -0.67 },
 ];
 // reasons for dissatisfaction, drawn as pills over the yellow slice (offsets from the centre)
 const REASONS = [

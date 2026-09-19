@@ -1054,7 +1054,6 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .vb-reason rect { fill: #fff; stroke: #e0e0e0; stroke-width: 1.2; filter: drop-shadow(0 6px 10px rgba(30,30,30,.12)); }
 .vb-reason text { font-size: 15px; font-weight: 500; fill: #1d1d1b; }
 .vb-toast { position: absolute; z-index: 3; transform: translate(-50%, calc(-100% - 16px)); padding: 8px 14px; border-radius: 999px; background: #1d1d1b; color: #fff; font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; pointer-events: none; box-shadow: 0 8px 20px rgba(0,0,0,.2); animation: vb-toast-in .18s ease both; }
-.vb-toast::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: #FFE300; }
 @keyframes vb-toast-in { from { opacity: 0; transform: translate(-50%, calc(-100% - 8px)); } to { opacity: 1; transform: translate(-50%, calc(-100% - 16px)); } }
 
 .vb-flow { margin-top: 34px; padding: 0; }
