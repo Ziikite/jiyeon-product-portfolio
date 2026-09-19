@@ -70,31 +70,6 @@ export default function ShadowingVisual({ body, quotes, photo, art }: { body: st
         )}
       </p>
 
-      <figure ref={photoRef as React.RefObject<HTMLElement>} className={`sh${photoOn ? " is-on" : ""}`}>
-        <div className="sh-stage">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="sh-photo" src={photo} alt="운전자 쉐도잉 장면" loading="lazy" decoding="async" />
-          <div className="sh-bubbles">
-            {quotes.map((q, i) => {
-              const lines = balance(q);
-              return (
-                <p key={q} className="sh-bubble" style={{ ["--i" as string]: i } as CSSProperties}>
-                  {lines ? (
-                    <>
-                      {lines[0]}
-                      <br />
-                      {lines[1]}
-                    </>
-                  ) : (
-                    q
-                  )}
-                </p>
-              );
-            })}
-          </div>
-        </div>
-        <figcaption className="sh-caption">운전자 쉐도잉(n=6)</figcaption>
-      </figure>
 
       <div ref={ratioRef as React.RefObject<HTMLDivElement>} className={`ig${ratioOn ? " is-on" : ""}`}>
         <svg className="ig-svg" viewBox="80 58 640 242" role="img" aria-label="음성 안내 무시 비율: 6명 중 5명은 음성 안내를 무시하는 모습 확인">
@@ -135,6 +110,32 @@ export default function ShadowingVisual({ body, quotes, photo, art }: { body: st
           </g>
         </svg>
       </div>
+
+      <figure ref={photoRef as React.RefObject<HTMLElement>} className={`sh${photoOn ? " is-on" : ""}`}>
+        <div className="sh-stage">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="sh-photo" src={photo} alt="운전자 쉐도잉 장면" loading="lazy" decoding="async" />
+          <div className="sh-bubbles">
+            {quotes.map((q, i) => {
+              const lines = balance(q);
+              return (
+                <p key={q} className="sh-bubble" style={{ ["--i" as string]: i } as CSSProperties}>
+                  {lines ? (
+                    <>
+                      {lines[0]}
+                      <br />
+                      {lines[1]}
+                    </>
+                  ) : (
+                    q
+                  )}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+        <figcaption className="sh-caption">운전자 쉐도잉(n=6)</figcaption>
+      </figure>
     </>
   );
 }

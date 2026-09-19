@@ -1085,7 +1085,7 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 }
 
 /* GM voice UX: Problem (shadowing photo with fading bubbles, 5-of-6 ignore ratio) */
-.sh { margin: 28px 0 0; }
+.sh { margin: 40px 0 0; }
 .sh-stage { position: relative; aspect-ratio: 2000 / 947; }
 .sh-photo { position: absolute; left: 0; bottom: 0; width: 71.7%; height: auto; border-radius: 14px; display: block; }
 .sh-bubbles { position: absolute; left: 26%; top: 5%; width: 62.5%; display: flex; flex-direction: column; gap: 14px; }
@@ -1093,7 +1093,7 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .sh.is-on .sh-bubble { opacity: 1; transform: translateY(0); transition-delay: calc(var(--i) * .7s + .3s); }
 .sh:not(.is-on) .sh-bubble { transition: none; }
 .case-section .sh-caption { max-width: none; width: 71.7%; margin: 12px 0 0; text-align: center; font-size: 13px; color: #8a8f98; }
-.ig { width: 71.7%; margin-top: 18px; }
+.ig { width: 71.7%; margin-top: 28px; }
 .ig-svg { display: block; width: 100%; height: auto; }
 .ig-rise { transform-box: fill-box; transform-origin: center bottom; transform: scaleY(0); }
 .ig.is-on .ig-rise { animation: ig-fill .8s cubic-bezier(.4,.1,.2,1) calc(var(--i) * .4s + .3s) both; }
