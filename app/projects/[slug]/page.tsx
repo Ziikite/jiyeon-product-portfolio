@@ -29,6 +29,7 @@ import VoiceBackground from "@/app/components/VoiceBackground";
 import ShadowingProblem from "@/app/components/ShadowingProblem";
 import CauseSection from "@/app/components/CauseSection";
 import UxFactors from "@/app/components/UxFactors";
+import TestDesignBlock from "@/app/components/TestDesignBlock";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -145,6 +146,8 @@ export default async function ProjectPage({
                   <SolutionVisual body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
                   <OutcomeVisual body={section.body} />
+                ) : project.slug === "gm-voice-ux" && section.label === "05 · Test Design" ? (
+                  <TestDesignBlock body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "04 · Strategy" && section.list ? (
                   <UxFactors body={section.body} list={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "03 · Cause" && section.list && section.image ? (
