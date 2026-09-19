@@ -34,8 +34,8 @@ const USAGE: Slice[] = [
 ];
 // reasons for dissatisfaction, drawn as pills over the yellow slice (offsets from the centre)
 const REASONS = [
-  { text: "부자연스러운 대화", x: 14, y: 8, w: 140 },
-  { text: "인식 정확도", x: 18, y: 54, w: 104 },
+  { text: "부자연스러운 대화", x: 16, y: 14, w: 108 },
+  { text: "인식 정확도", x: 20, y: 46, w: 80 },
 ];
 
 function useCount(target: number, run: boolean, delay: number, duration: number) {
@@ -255,8 +255,8 @@ export default function VoiceBackground({ body }: { body: string }) {
               <g className="vb-reasons">
                 {REASONS.map((r, i) => (
                   <g key={r.text} className="vb-reason" style={{ ["--i" as string]: i } as CSSProperties} pointerEvents="none">
-                    <rect x={125 + r.x} y={125 + r.y} width={r.w} height="38" rx="19" />
-                    <text x={125 + r.x + r.w / 2} y={125 + r.y + 24.5} textAnchor="middle">
+                    <rect x={125 + r.x} y={125 + r.y} width={r.w} height="24" rx="7" />
+                    <text x={125 + r.x + r.w / 2} y={125 + r.y + 16.3} textAnchor="middle">
                       {r.text}
                     </text>
                   </g>
