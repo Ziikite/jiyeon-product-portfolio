@@ -498,7 +498,6 @@ export const projects: Project[] = [
           "P10 : 차에 탔는데, 말을 내비가 계속하는건 '나는 빨리 가면 돼'라는 입장에선 계속 물어보는게 불편해요.",
           "P13 : 약간 정보량의 문제 같아요. 항상 매번 평소에 운전할 때, 30-20분 거리 가는데에도 주유량 기름양까지 브리핑해주면 피곤해요.",
         ],
-        image: "/projects/detail/gm-voice-ux-5.png",
       },
       {
         label: "07 · Solution 2",
