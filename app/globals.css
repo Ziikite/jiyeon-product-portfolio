@@ -1089,11 +1089,10 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .sh-stage { position: relative; aspect-ratio: 2000 / 947; }
 .sh-photo { position: absolute; left: 0; bottom: 0; width: 71.7%; height: auto; border-radius: 14px; display: block; }
 .sh-bubbles { position: absolute; left: 26%; top: 5%; width: 62.5%; display: flex; flex-direction: column; gap: 14px; }
-.case-section .sh-bubble { max-width: none; margin: 0; padding: 13px 18px; border: 1px solid #e4e4e4; border-radius: 16px; background: #fff; font-size: 13.5px; line-height: 1.55; letter-spacing: -.01em; color: #1d1d1b; box-shadow: 0 12px 30px rgba(0,0,0,.2); opacity: 0; transform: translateY(12px); transition: opacity .7s ease, transform .7s cubic-bezier(.22,.8,.2,1); }
-.sh-bubble:first-child { width: 80%; }
+.case-section .sh-bubble { max-width: none; margin: 0; padding: 13px 18px; border: 1px solid #e4e4e4; border-radius: 16px; background: #fff; font-size: 13.5px; line-height: 1.55; letter-spacing: -.01em; color: #1d1d1b; box-shadow: 0 12px 30px rgba(0,0,0,.2); width: fit-content; max-width: 100%; opacity: 0; transform: translateY(12px); transition: opacity .7s ease, transform .7s cubic-bezier(.22,.8,.2,1); }
 .sh.is-on .sh-bubble { opacity: 1; transform: translateY(0); transition-delay: calc(var(--i) * .7s + .3s); }
 .sh:not(.is-on) .sh-bubble { transition: none; }
-.case-section .sh-caption { max-width: none; margin: 12px 0 0; text-align: center; font-size: 13px; color: #8a8f98; }
+.case-section .sh-caption { max-width: none; width: 71.7%; margin: 12px 0 0; text-align: center; font-size: 13px; color: #8a8f98; }
 .ig { margin-top: 30px; }
 .ig-svg { display: block; width: 100%; height: auto; }
 .ig-rise { transform-box: fill-box; transform-origin: center bottom; transform: scaleY(0); }
