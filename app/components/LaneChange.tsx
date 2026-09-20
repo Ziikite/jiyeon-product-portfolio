@@ -2,26 +2,27 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
-export const ROUTE_UI_SIZE = { w: 1600, h: 650 };
-
-// Phrases the reference figure highlights inside the two voice scripts.
-const HIGHLIGHTS = ["현재 주유가 필요한 상태", "경유지로 설정해드릴까요?", "총 4km로, 21분 소요"];
 const AXES = ["안전감", "편안함", "매력"] as const; // clockwise from the top
 const MAX = 5;
+
+// Phrases the reference figure highlights inside the three voice scripts (and the callout bubble).
+const HIGHLIGHTS = ["교차로에서 우회전", "도로 정체가 있으므로", "왼쪽 차선으로 변경", "낙석이 있습니다", "차선을 변경"];
 
 type Guide = { title: string; rules: string[]; script: string };
 type Score = { name: string; adopted: number; rejected: number };
 
 const curly = (t: string) => t.replace(/'([^']+)'/g, "‘$1’");
 
-// The section body holds both guidelines, both voice scripts and the test scores as one string; split it back up.
+// The section body holds N guidelines (each "가이드라인(제목) : ...") plus the test scores as one string.
 function parseBody(body: string) {
-  const long = body.indexOf("가이드라인(장거리 운전) :");
-  const short = body.indexOf("가이드라인(단거리 운전) :");
-  const test = body.indexOf("Test Result");
-  if (long === -1 || short === -1 || test === -1) return null;
-  const guide = (title: string, label: string, from: number, to: number): Guide => {
-    const t = body.slice(from, to).replace(label, "").trim();
+  const markers = [...body.matchAll(/가이드라인\(([^)]+)\) :/g)];
+  const testAt = body.indexOf("Test Result");
+  if (!markers.length || testAt === -1) return null;
+
+  const guides: Guide[] = markers.map((m, i) => {
+    const from = (m.index ?? 0) + m[0].length;
+    const to = i + 1 < markers.length ? markers[i + 1].index! : testAt;
+    const t = body.slice(from, to).trim();
     const q = t.indexOf('"');
     const rules = t
       .slice(0, q)
@@ -29,20 +30,16 @@ function parseBody(body: string) {
       .replace(/\.$/, "")
       .split(" / ")
       .map((r) => curly(r.trim()));
-    return { title, rules, script: curly(t.slice(q + 1, t.lastIndexOf('"')).trim()) };
-  };
-  const scores: Score[] = [...body.slice(test).matchAll(/(\S+) ([\d.]+) vs ([\d.]+)/g)].map((m) => ({
+    return { title: m[1], rules, script: curly(t.slice(q + 1, t.lastIndexOf('"')).trim()) };
+  });
+
+  const scores: Score[] = [...body.slice(testAt).matchAll(/(\S+) ([\d.]+) vs ([\d.]+)/g)].map((m) => ({
     name: m[1],
     adopted: parseFloat(m[2]),
     rejected: parseFloat(m[3]),
   }));
-  return {
-    guides: [
-      guide("장거리 운전", "가이드라인(장거리 운전) :", long, short),
-      guide("단거리 운전", "가이드라인(단거리 운전) :", short, test),
-    ],
-    scores,
-  };
+
+  return { guides, scores };
 }
 
 function useWatch<T extends HTMLElement>(threshold: number) {
@@ -51,7 +48,6 @@ function useWatch<T extends HTMLElement>(threshold: number) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // Plays when the block scrolls into view and starts over every time it comes back.
     const observer = new IntersectionObserver(([entry]) => setOn(entry.isIntersecting), { threshold, rootMargin: "0px 0px -6% 0px" });
     observer.observe(el);
     return () => observer.disconnect();
@@ -59,7 +55,6 @@ function useWatch<T extends HTMLElement>(threshold: number) {
   return [ref, on] as const;
 }
 
-// 0 -> 1 (eased) once `run` turns true; back to 0 when it turns false.
 function useProgress(run: boolean, delay: number, duration: number) {
   const [p, setP] = useState(0);
   useEffect(() => {
@@ -90,7 +85,6 @@ function useProgress(run: boolean, delay: number, duration: number) {
 }
 
 function Script({ text }: { text: string }) {
-  // wrap each highlighted phrase; everything else stays plain text
   const parts: (string | { hl: string })[] = [];
   let rest = text;
   while (rest) {
@@ -120,17 +114,16 @@ function Script({ text }: { text: string }) {
   );
 }
 
-// ---- radar --------------------------------------------------------------------------------------------------------------
+// ---- radar (identical scale/axes to RouteBriefing's Solution 1 chart, kept local to avoid cross-block coupling) ----
 const CX = 150;
 const CY = 168;
 const R = 108;
-const ang = (i: number) => ((-90 + i * 120) * Math.PI) / 180; // top, bottom right, bottom left
+const ang = (i: number) => ((-90 + i * 120) * Math.PI) / 180;
 const pt = (i: number, r: number) => `${(CX + Math.cos(ang(i)) * r).toFixed(1)},${(CY + Math.sin(ang(i)) * r).toFixed(1)}`;
 
 function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
   const p = useProgress(run, 200, 1400);
   const [focus, setFocus] = useState<"adopted" | "rejected" | null>(null);
-  // order the scores to match the axes drawn (안전감 top, 편안함 bottom right, 매력 bottom left)
   const byAxis = AXES.map((a) => scores.find((s) => s.name === a));
   if (byAxis.some((s) => !s)) return null;
   const poly = (key: "adopted" | "rejected") => byAxis.map((s, i) => pt(i, (s![key] / MAX) * R * p)).join(" ");
@@ -178,25 +171,7 @@ function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
   );
 }
 
-// Where each popup badge lands over the in-car screen, as a % of the figure's box (left/top/width).
-const BADGE_LAYOUT = [
-  { left: "0%", top: "48.4%", width: "41.5%" }, // 문막 휴게소 - 여주 IC 방향 도로 공사
-  { left: "30.25%", top: "23.2%", width: "19.75%" }, // 용인 휴게소
-  { left: "58.75%", top: "23.2%", width: "19.5%" }, // 중앙 고속도로
-  { left: "84.25%", top: "38.5%", width: "15.75%" }, // 강원남로
-];
-
-export default function RouteBriefing({
-  body,
-  quotes,
-  uiImage,
-  badges = [],
-}: {
-  body: string;
-  quotes: string[];
-  uiImage: string | null;
-  badges?: string[];
-}) {
+export default function LaneChange({ body, quotes, uiImage }: { body: string; quotes: string[]; uiImage: string | null }) {
   const parsed = parseBody(body);
   const [guideRef, guideOn] = useWatch<HTMLDivElement>(0.3);
   const [uiRef, uiOn] = useWatch<HTMLElement>(0.4);
@@ -204,38 +179,31 @@ export default function RouteBriefing({
   const [focus, setFocus] = useState<number | null>(null);
   if (!parsed) return <p>{body}</p>;
 
+  // The "예외 상황" guide's script is the one echoed in the callout bubble above the screen.
+  const bubbleScript = parsed.guides[1]?.script ?? parsed.guides[0]?.script;
+
   return (
     <div className="rb">
       <span className="rb-pill">가이드라인</span>
 
-      <figure ref={uiRef} className={`rb-ui${uiOn ? " is-on" : ""}`}>
+      <figure ref={uiRef} className={`rb-ui lc-ui${uiOn ? " is-on" : ""}`}>
+        {bubbleScript && (
+          <p className="lc-bubble">
+            <Script text={bubbleScript} />
+          </p>
+        )}
         {uiImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={uiImage} alt="경로 브리핑 차량 화면" loading="lazy" decoding="async" />
+          <img src={uiImage} alt="차선 변경 안내 차량 화면" loading="lazy" decoding="async" />
         ) : (
           <div className="rb-placeholder">
-            <span className="rb-placeholder-name">경로 브리핑 차량 화면</span>
-            <span className="rb-placeholder-size">
-              {ROUTE_UI_SIZE.w} × {ROUTE_UI_SIZE.h}
-            </span>
+            <span className="rb-placeholder-name">차선 변경 안내 차량 화면</span>
           </div>
         )}
-        {badges.map((src, bi) => (
-          <img
-            key={src}
-            className="rb-badge"
-            src={src}
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-            style={{ ...BADGE_LAYOUT[bi], ["--bi" as string]: bi } as CSSProperties}
-          />
-        ))}
       </figure>
 
       <div ref={guideRef} className={`rb-guides${guideOn ? " is-on" : ""}${focus !== null ? " has-focus" : ""}`}>
-        <div className="rb-cols">
+        <div className="rb-cols rb-cols-3">
           {parsed.guides.map((g, gi) => (
             <div
               key={g.title}

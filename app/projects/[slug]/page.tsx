@@ -31,6 +31,8 @@ import CauseSection from "@/app/components/CauseSection";
 import UxFactors from "@/app/components/UxFactors";
 import TestDesignBlock from "@/app/components/TestDesignBlock";
 import RouteBriefingBlock from "@/app/components/RouteBriefingBlock";
+import LaneChangeBlock from "@/app/components/LaneChangeBlock";
+import InfoOverlap from "@/app/components/InfoOverlap";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -133,9 +135,12 @@ export default async function ProjectPage({
               <span className="case-label">{section.label}</span>
               <div>
                 {(() => {
-                  // gm-voice-ux Solution 1: "경로 브리핑 — …" reads better as a small chip above the title
+                  // gm-voice-ux Solution 1/2: "경로 브리핑 — …" reads better as a small chip above the title
                   const [chip, ...rest] =
-                    project.slug === "gm-voice-ux" && section.label === "06 · Solution 1" ? section.heading.split(" — ") : [null, section.heading];
+                    project.slug === "gm-voice-ux" &&
+                    (section.label === "06 · Solution 1" || section.label === "07 · Solution 2" || section.label === "08 · Solution 3")
+                      ? section.heading.split(" — ")
+                      : [null, section.heading];
                   return (
                     <>
                       {chip && rest.length > 0 && <span className="case-chip">{chip}</span>}
@@ -159,6 +164,10 @@ export default async function ProjectPage({
                   <OutcomeVisual body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "06 · Solution 1" && section.list ? (
                   <RouteBriefingBlock body={section.body} list={section.list} />
+                ) : project.slug === "gm-voice-ux" && section.label === "07 · Solution 2" && section.list ? (
+                  <LaneChangeBlock body={section.body} list={section.list} />
+                ) : project.slug === "gm-voice-ux" && section.label === "08 · Solution 3" && section.list ? (
+                  <InfoOverlap body={section.body} quotes={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "05 · Test Design" ? (
                   <TestDesignBlock body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "04 · Strategy" && section.list ? (
