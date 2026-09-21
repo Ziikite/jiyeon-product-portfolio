@@ -1413,11 +1413,12 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 }
 
 /* GM EV Charging: Problem (three pain-point columns, photo + quotes -> insight) */
-.pv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 28px; }
-.pv-col { display: flex; flex-direction: column; opacity: 0; transform: translateY(16px); transition: opacity .6s ease calc(var(--i) * .12s), transform .6s ease calc(var(--i) * .12s); }
+.pv { display: flex; flex-direction: column; gap: 32px; margin-top: 28px; }
+.pv-col { opacity: 0; transform: translateY(16px); transition: opacity .6s ease calc(var(--i) * .12s), transform .6s ease calc(var(--i) * .12s); }
 .pv.is-on .pv-col { opacity: 1; transform: none; }
 .pv-title { margin: 0 0 12px; font-size: 13.5px; font-weight: 700; letter-spacing: -.01em; color: var(--ink); }
-.pv-stage { position: relative; aspect-ratio: 4 / 3; border-radius: 16px; background: #141414; overflow: hidden; }
+.pv-row { display: flex; align-items: center; gap: 24px; }
+.pv-stage { position: relative; flex: 0 0 260px; aspect-ratio: 4 / 3; border-radius: 16px; background: #141414; overflow: hidden; }
 .pv-grain {
   position: absolute; left: 8%; top: 10%; width: 84%; height: 80%; border-radius: 46% 54% 52% 48% / 48% 46% 54% 52%;
   background-image: radial-gradient(circle, #6b6b6b 1px, transparent 1.6px);
@@ -1426,20 +1427,24 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
   filter: blur(.2px);
 }
 .pv-photo { position: absolute; left: 14%; top: 12%; width: 68%; height: 66%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 26px rgba(0,0,0,.45); transform: rotate(-3deg); transition: transform .4s cubic-bezier(.22,.8,.2,1); }
-.pv-col:hover .pv-photo, .pv-photo:focus-within { transform: rotate(0deg) scale(1.03); }
+.pv-stage:hover .pv-photo, .pv-photo:focus-within { transform: rotate(0deg) scale(1.03); }
 .pv-photo img { display: block; width: 100%; height: 100%; object-fit: cover; max-width: none; }
 .pv-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 100%; padding: 8px; text-align: center; background: repeating-linear-gradient(45deg, #1b1b1b, #1b1b1b 10px, #222 10px, #222 20px); color: #b5b5b0; font-size: 11.5px; }
 .pv-placeholder-size { font-size: 10.5px; opacity: .75; font-variant-numeric: tabular-nums; }
 .pv-quotes { position: absolute; inset: 6% 6% auto 6%; display: flex; flex-direction: column; gap: 10px; }
 .pv-quote { margin: 0; padding: 9px 12px; border-radius: 12px; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.22); font-size: 11.5px; line-height: 1.5; color: #1d1d1b; cursor: default; transition: transform .25s ease, box-shadow .25s ease; }
 .pv-quote:hover, .pv-quote:focus-visible { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.3); outline: none; }
-.pv-arrow { display: block; width: 22px; height: 15px; margin: 14px auto; fill: #3ddc97; animation: pv-nudge 1.8s ease-in-out infinite; }
+.pv-arrow { flex: none; display: block; width: 22px; height: 15px; fill: #3ddc97; transform: rotate(-90deg); animation: pv-nudge 1.8s ease-in-out infinite; }
 .pv.is-on .pv-arrow { animation-play-state: running; }
-.pv-insight { margin: 0; padding: 16px 18px; border-radius: 14px; background: #d6f7e9; font-size: 13.5px; font-weight: 700; line-height: 1.5; letter-spacing: -.01em; text-align: center; color: #0d3d28; cursor: default; transition: transform .25s ease, background-color .25s ease; }
+.pv-insight { flex: 1; min-width: 0; margin: 0; padding: 18px 22px; border-radius: 14px; background: #d6f7e9; font-size: 14px; font-weight: 700; line-height: 1.55; letter-spacing: -.01em; color: #0d3d28; cursor: default; transition: transform .25s ease, background-color .25s ease; }
 .pv-insight:hover, .pv-insight:focus-visible { transform: translateY(-2px); background: #c4f2df; outline: none; }
-@keyframes pv-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
-@media (max-width: 640px) {
-  .pv { grid-template-columns: minmax(0, 1fr); }
+@keyframes pv-nudge { 0%, 100% { transform: rotate(-90deg) translateY(0); } 50% { transform: rotate(-90deg) translateY(4px); } }
+@keyframes pv-nudge-vertical { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+@media (max-width: 780px) {
+  .pv-row { flex-direction: column; align-items: stretch; }
+  .pv-stage { flex: none; align-self: center; width: 100%; max-width: 320px; }
+  .pv-arrow { align-self: center; animation-name: pv-nudge-vertical; }
+  .pv-insight { text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pv-col { opacity: 1 !important; transform: none !important; }

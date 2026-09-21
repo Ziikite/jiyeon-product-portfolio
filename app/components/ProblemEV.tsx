@@ -55,37 +55,39 @@ export default function ProblemEV({ body, list, images }: { body: string; list: 
         {columns.map((col, i) => {
           const src = images[`${i + 1}`];
           return (
-            <div key={col.title} className="pv-col" style={{ ["--i" as string]: i } as CSSProperties} tabIndex={0}>
+            <div key={col.title} className="pv-col" style={{ ["--i" as string]: i } as CSSProperties}>
               <h4 className="pv-title">{col.title}</h4>
-              <div className="pv-stage">
-                <span className="pv-grain" aria-hidden="true" />
-                <div className="pv-photo">
-                  {src ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={src} alt={col.title} loading="lazy" decoding="async" />
-                  ) : (
-                    <div className="pv-placeholder">
-                      <span>{col.title}</span>
-                      <span className="pv-placeholder-size">
-                        {PROBLEM_IMAGE_SIZE.w} × {PROBLEM_IMAGE_SIZE.h}
-                      </span>
-                    </div>
-                  )}
+              <div className="pv-row">
+                <div className="pv-stage" tabIndex={0}>
+                  <span className="pv-grain" aria-hidden="true" />
+                  <div className="pv-photo">
+                    {src ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={src} alt={col.title} loading="lazy" decoding="async" />
+                    ) : (
+                      <div className="pv-placeholder">
+                        <span>{col.title}</span>
+                        <span className="pv-placeholder-size">
+                          {PROBLEM_IMAGE_SIZE.w} × {PROBLEM_IMAGE_SIZE.h}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="pv-quotes">
+                    {col.quotes.map((q) => (
+                      <p key={q} className="pv-quote" tabIndex={0}>
+                        {q}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-                <div className="pv-quotes">
-                  {col.quotes.map((q) => (
-                    <p key={q} className="pv-quote" tabIndex={0}>
-                      {q}
-                    </p>
-                  ))}
-                </div>
+                <svg className="pv-arrow" viewBox="0 0 28 18" aria-hidden="true">
+                  <path d="M2 2 L26 2 L14 17 Z" />
+                </svg>
+                <p className="pv-insight" tabIndex={0}>
+                  {col.insight}
+                </p>
               </div>
-              <svg className="pv-arrow" viewBox="0 0 28 18" aria-hidden="true">
-                <path d="M2 2 L26 2 L14 17 Z" />
-              </svg>
-              <p className="pv-insight" tabIndex={0}>
-                {col.insight}
-              </p>
             </div>
           );
         })}
