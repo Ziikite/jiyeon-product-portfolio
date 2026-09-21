@@ -593,7 +593,6 @@ export const projects: Project[] = [
           "피로를 풀 수 있는 환경 — 짧고 가벼운 콘텐츠 추천 시스템, 먹거리 및 편의시설 사전 예약 시스템 → 휴식 라운지 제공",
           "실시간 모니터링 가능한 UI — 자동 충전 설정 및 결제 기능",
         ],
-        image: "/projects/detail/gm-ev-charging-4.png",
       },
       {
         label: "05 · Solution 1",
