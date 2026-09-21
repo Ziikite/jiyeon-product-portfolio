@@ -149,39 +149,29 @@ function OverlapText({ variant }: { variant: Variant }) {
   );
 }
 
-// 주차장 변경: reroute from the original (crossed-out) spot to the new one, with a reason bubble of varying detail.
-const PARKING_TEXT: Record<string, string[]> = {
-  a: ["인근 주차장으로 경로를 변경했어요"],
-  b: ["OO주차장이 만차라 인근 XX주차장으로 변경했어요.", "도보 3분 · 요금 시간당 2,000원"],
+// 주차장 변경: the real in-car screen (gm-voice-ux-test-parking-a/b) plus the voice line read over it.
+const PARKING_BUBBLE: Record<string, string> = {
+  a: "현재 지하주차장이 가득 찼습니다. 지상 주차장으로 경로를 변경할까요?",
+  b: "현재 지하주차장이 가득 찼습니다. 지상 주차장으로 이동하시면 원래 목적지보다 약 6분 더 소요됩니다. 지상주차장으로 경로를 변경할까요?",
+};
+const PARKING_HIGHLIGHT: Record<string, string> = {
+  a: "현재 지하주차장이 가득 찼습니다. 지상 주차장으로 경로를",
+  b: "지상 주차장으로 이동하시면 원래 목적지보다 약 6분 더 소요됩니다. 지상주차장으로 경로를",
 };
 
-function ParkingDiagram({ variant }: { variant: Variant }) {
-  const lines = PARKING_TEXT[variant];
-  const tall = lines.length > 1;
+function ParkingCard({ variant, src }: { variant: Variant; src: string | null }) {
   return (
-    <svg className="td-diagram" viewBox="0 0 220 140" role="img" aria-label={variant === "a" ? "경로변경 이유 간단 설명 다이어그램" : "경로변경 이유 상세 설명 다이어그램"}>
-      <circle cx="26" cy="34" r="6" className="td-node-start" />
-      <text x="26" y="18" textAnchor="middle" className="td-diagram-label">
-        출발
-      </text>
-      <line x1="32" y1="34" x2="94" y2="34" className="td-diagram-axis td-dash" />
-      <g transform="translate(104,34)">
-        <path d="M0 -14 C8 -14 14 -8 14 0 C14 10 0 24 0 24 C0 24 -14 10 -14 0 C-14 -8 -8 -14 0 -14Z" className="td-node-old" />
-        <line x1="-5" y1="-5" x2="5" y2="5" className="td-x-mark" />
-        <line x1="5" y1="-5" x2="-5" y2="5" className="td-x-mark" />
-      </g>
-      <path d="M112 40 C128 58 148 58 162 40" fill="none" className="td-diagram-axis td-reroute" />
-      <g transform="translate(172,34)">
-        <path d="M0 -14 C8 -14 14 -8 14 0 C14 10 0 24 0 24 C0 24 -14 10 -14 0 C-14 -8 -8 -14 0 -14Z" className="td-node-new" />
-        <path d="M-5 0 L-1 5 L6 -6" fill="none" className="td-check-mark" />
-      </g>
-      <rect x="14" y="78" width="192" height={tall ? 46 : 32} rx="10" className="td-bubble" />
-      {lines.map((l, i) => (
-        <text key={l} x="110" y={tall ? 98 + i * 18 : 98} textAnchor="middle" className="td-bubble-text">
-          {l}
-        </text>
-      ))}
-    </svg>
+    <div className="td-parking">
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img className="td-parking-img" src={src} alt={`주차장 변경 ${variant.toUpperCase()}안 화면`} />
+      ) : (
+        <div className="td-placeholder td-parking-placeholder">
+          <span className="td-placeholder-name">주차장 변경 화면 · {variant.toUpperCase()}안</span>
+        </div>
+      )}
+      <p className="td-route-bubble">{highlightText(PARKING_BUBBLE[variant], [PARKING_HIGHLIGHT[variant]])}</p>
+    </div>
   );
 }
 
@@ -263,18 +253,17 @@ export default function TestDesign({ images }: { images: Record<string, string |
       >
         {scenario.variants.map((v, i) => {
           const src = images[`${scenario.key}-${v}`];
-          const isDiagram = scenario.key === "parking";
-          const isText = scenario.key === "route" || scenario.key === "overlap";
+          const isText = scenario.key === "route" || scenario.key === "overlap" || scenario.key === "parking";
           return (
             <div key={v} className="td-col" style={{ ["--i" as string]: i } as CSSProperties}>
               <span className="td-tag">{v.toUpperCase()}안</span>
-              <div className={`td-card${isDiagram ? " td-card--diagram" : ""}${isText ? " td-card--text" : ""}`}>
+              <div className={`td-card${isText ? " td-card--text" : ""}`}>
                 {scenario.key === "route" ? (
                   <RouteText variant={v} />
                 ) : scenario.key === "overlap" ? (
                   <OverlapText variant={v} />
                 ) : scenario.key === "parking" ? (
-                  <ParkingDiagram variant={v} />
+                  <ParkingCard variant={v} src={src} />
                 ) : src ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={src} alt={`${scenario.label} ${v.toUpperCase()}안`} />
