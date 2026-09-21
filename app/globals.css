@@ -1205,6 +1205,33 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .td-placeholder-size { font-size: 11.5px; font-variant-numeric: tabular-nums; letter-spacing: .02em; opacity: .75; }
 .td-col.is-empty .td-card { display: grid; place-items: center; background: transparent; border: 1.5px dashed #d0d0cb; }
 .td-none { font-size: 22px; color: #b9b9b3; }
+.td-caption { margin: 0; padding: 0 2px; font-size: 12px; line-height: 1.45; color: #6b6b66; }
+.td-col.is-empty .td-caption { display: none; }
+
+.td-card--diagram { background: none; border: none; }
+
+.td-route { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; padding: 16px; text-align: center; }
+.td-route-avatar { font-size: 22px; }
+.td-route-bubble { margin: 0; max-width: 92%; font-size: 13px; line-height: 1.5; color: #f2f2ee; }
+
+.td-diagram { display: block; width: 100%; height: 100%; }
+.td-diagram-label { font-size: 10px; fill: #8a8a84; font-weight: 600; }
+.td-diagram-note { font-size: 9.5px; fill: #6b6b66; font-weight: 600; opacity: 0; animation: td-fade-in .5s ease .6s both; }
+.td-diagram-axis { stroke: #cfcfc9; stroke-width: 1.5; }
+.td-dash { stroke-dasharray: 3 3; }
+.td-reroute { stroke-dasharray: 4 3; }
+.td-bar { fill: #FFE300; transform-box: fill-box; transform-origin: left center; animation: td-bar-in .6s cubic-bezier(.22,.8,.2,1) both; }
+.td-bar-2 { fill: #2A2B2C; animation-delay: .15s; }
+.td-overlap-zone { fill: rgba(255,227,0,.28); stroke: #F2B600; stroke-width: 1; opacity: 0; animation: td-fade-in .5s ease .45s both; }
+.td-node-start { fill: #6f7b8a; }
+.td-node-old { fill: #d9d9d3; }
+.td-node-new { fill: #FFE300; opacity: 0; animation: td-fade-in .5s ease .4s both; }
+.td-x-mark { stroke: #b5453f; stroke-width: 1.6; stroke-linecap: round; }
+.td-check-mark { stroke: #1d1d1b; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.td-bubble { fill: #FFF8DC; stroke: #F2B600; stroke-width: 1; opacity: 0; animation: td-fade-in .5s ease .35s both; }
+.td-bubble-text { font-size: 10.5px; fill: #4a4a45; }
+@keyframes td-bar-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes td-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 640px) {
   .td-panel { grid-template-columns: minmax(0, 1fr); }
   .td-card { aspect-ratio: 16 / 10; }
@@ -1213,6 +1240,7 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
   .td-phase, .td-chip { opacity: 1 !important; transform: none !important; }
   .td-col { animation: none !important; }
   .td-progress { display: none; }
+  .td-bar, .td-overlap-zone, .td-diagram-note, .td-node-new, .td-bubble { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 
 /* GM voice UX: Solution 1 (route briefing guidelines, radar, interview quotes) */
