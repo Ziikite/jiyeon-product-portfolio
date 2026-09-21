@@ -622,7 +622,6 @@ export const projects: Project[] = [
           "\"실용성과 재미를 동시에 고려한 UX 기획이 돋보였습니다.\"",
           "\"비즈니스적 확장 가능성까지 고려한 전략적 접근 방식이 인상적이었습니다.\"",
         ],
-        image: "/projects/detail/gm-ev-charging-8.png",
       },
       {
         label: "09 · Appendix",

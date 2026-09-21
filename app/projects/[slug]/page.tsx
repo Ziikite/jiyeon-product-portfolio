@@ -41,6 +41,7 @@ import StrategyEV from "@/app/components/StrategyEV";
 import Solution1EV from "@/app/components/Solution1EV";
 import Solution2EV from "@/app/components/Solution2EV";
 import Solution3EV from "@/app/components/Solution3EV";
+import OutcomeEV from "@/app/components/OutcomeEV";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -170,6 +171,8 @@ export default async function ProjectPage({
                   <SolutionVisual body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
                   <OutcomeVisual body={section.body} />
+                ) : project.slug === "gm-ev-charging" && section.label === "08 · Outcome" && section.list ? (
+                  <OutcomeEV quotes={section.list} />
                 ) : project.slug === "gm-ev-charging" && section.label === "07 · Solution 3" ? (
                   <Solution3EV />
                 ) : project.slug === "gm-ev-charging" && section.label === "06 · Solution 2" ? (

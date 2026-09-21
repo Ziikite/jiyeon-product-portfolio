@@ -1514,3 +1514,15 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .s1-note-plain h4 { margin: 0 0 10px; font-size: 17px; }
 .s1-note-plain ul { padding-left: 14px; }
 .s1-note-plain li::before { left: 0; }
+
+/* GM EV Charging: Outcome — two rounded reflection boxes + stakeholder quotes */
+.oe-boxes { display: flex; flex-direction: column; gap: 18px; margin-top: 24px; max-width: 640px; }
+.oe-box { padding: 22px 24px; border-radius: 16px; background: #f4faf8; border: 1px solid #dcf0e8; }
+.oe-box h4 { margin: 0 0 10px; font-size: 16px; font-weight: 800; line-height: 1.4; letter-spacing: -.01em; color: #0d3d28; }
+.oe-box p { margin: 0; font-size: 14px; line-height: 1.75; color: var(--ink); }
+.oe-quotes { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; max-width: 640px; }
+.oe-quote { margin: 0; padding: 14px 18px; border-radius: 12px; background: #fff; border: 1px solid var(--line); font-size: 13.5px; font-style: italic; line-height: 1.65; color: var(--ink); opacity: 0; transform: translateY(10px); transition: opacity .5s ease calc(var(--i) * .12s), transform .5s ease calc(var(--i) * .12s); }
+.oe-quotes.is-on .oe-quote { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .oe-quote { opacity: 1 !important; transform: none !important; }
+}
