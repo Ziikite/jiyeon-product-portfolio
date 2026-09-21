@@ -47,9 +47,10 @@ export default function Solution1EV() {
       <div className="s1-notes">
         {NOTES.map((n, i) => (
           <div key={n.title} className="s1-note">
-            <h4>
-              {i + 1}. {n.title}
-            </h4>
+            <div className="s1-note-head">
+              <span className="s1-num">{i + 1}</span>
+              <h4>{n.title}</h4>
+            </div>
             <ul>
               {n.bullets.map((b) => (
                 <li key={b}>{b}</li>
