@@ -88,29 +88,63 @@ function RouteText({ variant }: { variant: Variant }) {
   );
 }
 
-// 정보 중첩: the actual guideline scripts from Solution 3 (app/lib/data.ts, "가이드라인(예외 상황)"/"가이드라인(기본 경로 안내)")
-// — A plays its two announcements strictly back-to-back (정보중첩 불가), B lets a user question cut into an in-progress
-// announcement and merges the reply (정보중첩 허용), exactly as InfoOverlap.tsx already renders in the full Solution 3 section.
-const OVERLAP_TEXT: Record<string, string[]> = {
-  a: ["전방 500m 도로 정체가 발생했습니다. 우측 차로로 이동해주세요.", "요청하신 가까운 주유소 위치는 2km 떨어진 용인 휴게소에 있습니다."],
-  b: ["주행 경로를 변경합니다. 기존 주행 경로에...", "오늘 오후에 비 와?", "60%로 비 예보가 있습니다. 기존 주행 경로에서 300m 앞 좌회전입니다."],
+// 정보 중첩: transcribed verbatim from the user's reference mockups. Both variants start the same way — the agent's
+// route-change announcement gets cut off by a question — then diverge in how the resumed announcement handles it.
+// A (불가): resumes by restating the original line from the top, so the restated line visually overlaps/duplicates
+// the cut-off one instead of answering the question. B (허용): the reply folds the answer in and continues cleanly.
+type OverlapLine = { text: string; tone?: "ghost" | "pink" | "blue" | "bold" };
+type OverlapTurn = { speaker: "user" | "agent"; lines: OverlapLine[] };
+
+const OVERLAP_TURNS: Record<string, OverlapTurn[]> = {
+  a: [
+    { speaker: "agent", lines: [{ text: "주행 경로를 변경합니다. 기존 주행 경로에..." }] },
+    { speaker: "user", lines: [{ text: "오늘 오후에 비 와?" }] },
+    {
+      speaker: "agent",
+      lines: [
+        { text: "주행 경로를 변경합니다. 기존 주행 경로에...", tone: "ghost" },
+        { text: "주행 경로를 변경합니다. 기존 주행 경로에서", tone: "pink" },
+        { text: "300미터 앞 좌회전입니다.", tone: "blue" },
+      ],
+    },
+  ],
+  b: [
+    { speaker: "agent", lines: [{ text: "주행 경로를 변경합니다. 기존 주행 경로에..." }] },
+    { speaker: "user", lines: [{ text: "오늘 오후에 비 와?" }] },
+    {
+      speaker: "agent",
+      lines: [
+        { text: "60%로 비 예보가 있습니다.", tone: "blue" },
+        { text: "기존 주행 경로에서 300미터 앞 좌회전입니다.", tone: "bold" },
+      ],
+    },
+  ],
 };
-const OVERLAP_HIGHLIGHT = "60%로 비 예보가 있습니다";
 
 function OverlapText({ variant }: { variant: Variant }) {
   return (
     <div className="td-chat">
-      {OVERLAP_TEXT[variant].map((turn, i) => {
-        const isUser = turn.trim().endsWith("?");
-        return (
-          <div key={i} className="td-route">
-            <span className="td-route-avatar" aria-hidden="true">
-              {isUser ? "👤" : "🚗"}
+      {OVERLAP_TURNS[variant].map((turn, i) => (
+        <div key={i} className={`td-row td-row-${turn.speaker}`}>
+          {turn.speaker === "user" && (
+            <span className="td-row-avatar" aria-hidden="true">
+              👤
             </span>
-            <p className="td-route-bubble">{highlightText(turn, [OVERLAP_HIGHLIGHT])}</p>
+          )}
+          <div className="td-row-bubble">
+            {turn.lines.map((l, li) => (
+              <p key={li} className={l.tone ? `td-line-${l.tone}` : undefined}>
+                {l.text}
+              </p>
+            ))}
           </div>
-        );
-      })}
+          {turn.speaker === "agent" && (
+            <span className="td-row-avatar" aria-hidden="true">
+              🚗
+            </span>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
