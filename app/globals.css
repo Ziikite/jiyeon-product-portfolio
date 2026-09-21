@@ -1511,3 +1511,6 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .s2-item .s1-note { margin-top: 18px; }
 .s2-image-wrap { border-radius: 14px; overflow: hidden; }
 .s2-image { display: block; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+.s1-note-plain h4 { margin: 0 0 10px; font-size: 17px; }
+.s1-note-plain ul { padding-left: 14px; }
+.s1-note-plain li::before { left: 0; }

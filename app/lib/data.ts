@@ -611,7 +611,6 @@ export const projects: Project[] = [
         heading: "휴식을 취할 수 있는 라운지형 충전소",
         body:
           "휴식 공간으로, 충전 중 피로를 풀 수 있는 휴게 공간 제공. 팝업 형태로 브랜드 프로모션이 가능한 충전소 — 브랜드 팝업 존으로, 한국 GM 브랜드를 홍보할 수 있는 프로모션 공간 제공. 충전 중 휴식 외에도 새로운 관광 요소로써 체험할 수 있는 UX",
-        image: "/projects/detail/gm-ev-charging-7.png",
       },
       {
         label: "08 · Outcome",
