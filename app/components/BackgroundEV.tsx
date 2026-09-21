@@ -56,14 +56,18 @@ const posR = Math.round(BUBBLE_K * Math.sqrt(POSITIVE.pct));
 const negR = Math.round(BUBBLE_K * Math.sqrt(NEGATIVE.pct));
 const posCx = 175;
 const negCx = 430;
-const cy = 165;
+const VIEW_W = 560;
+const VIEW_H = 420; // enough headroom above the bubbles for their quote callouts, and margin below the big circle
+const cy = 100 + posR; // 100px of headroom above the largest circle
+const posBubbleTop = 10;
+const negBubbleTop = 110;
 
 function ChargingDiscomfortChart() {
   const [ref, on] = useInView<HTMLDivElement>(0.4);
   return (
     <div ref={ref} className={`cd${on ? " is-on" : ""}`}>
       <div className="cd-chart">
-        <svg viewBox="0 0 560 300" className="cd-svg" role="img" aria-label="전기차 충전에 대한 긍정 89%, 부정 11% 응답 비율">
+        <svg viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} className="cd-svg" role="img" aria-label="전기차 충전에 대한 긍정 89%, 부정 11% 응답 비율">
           <circle className="cd-bubble-circle cd-bubble-pos-circle" cx={posCx} cy={cy} r={posR} />
           <circle className="cd-bubble-circle cd-bubble-neg-circle" cx={negCx} cy={cy} r={negR} />
           <text x={posCx} y={cy - 8} textAnchor="middle" className="cd-circle-value">
@@ -79,10 +83,16 @@ function ChargingDiscomfortChart() {
             부정
           </text>
         </svg>
-        <p className="cd-bubble cd-bubble-pos" style={{ left: `${((posCx - posR) / 560) * 100}%`, top: `${((cy - posR) / 300) * 100 - 14}%` }}>
+        <p
+          className="cd-bubble cd-bubble-pos"
+          style={{ left: `${((posCx - posR) / VIEW_W) * 100}%`, top: `${(posBubbleTop / VIEW_H) * 100}%` }}
+        >
           {POSITIVE.quote}
         </p>
-        <p className="cd-bubble cd-bubble-neg" style={{ left: `${((negCx - 60) / 560) * 100}%`, top: `${((cy - negR) / 300) * 100 - 20}%` }}>
+        <p
+          className="cd-bubble cd-bubble-neg"
+          style={{ left: `${((negCx - 70) / VIEW_W) * 100}%`, top: `${(negBubbleTop / VIEW_H) * 100}%` }}
+        >
           {NEGATIVE.quote}
         </p>
       </div>
