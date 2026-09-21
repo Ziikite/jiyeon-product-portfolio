@@ -59,8 +59,8 @@ const negCx = 430;
 const VIEW_W = 560;
 const VIEW_H = 420; // enough headroom above the bubbles for their quote callouts, and margin below the big circle
 const cy = 100 + posR; // 100px of headroom above the largest circle
-const posBubbleTop = 10;
-const negBubbleTop = 110;
+const posBubbleTop = 60; // dips into the top of the positive circle so it visibly overlaps
+const negBubbleTop = 150; // dips into the top of the negative circle
 
 function ChargingDiscomfortChart() {
   const [ref, on] = useInView<HTMLDivElement>(0.4);
