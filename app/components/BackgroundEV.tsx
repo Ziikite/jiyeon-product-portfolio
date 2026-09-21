@@ -1,0 +1,87 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+const ARTICLES = [
+  {
+    src: "/projects/detail/gm-ev-charging-article-1.png",
+    caption: "지디넷코리아, 車안이 영화관?…현대차 OTT, 테슬라와 차별점은, 2023",
+  },
+  {
+    src: "/projects/detail/gm-ev-charging-article-2.png",
+    caption: "뉴시스, \"전기차에서 OTT 본다\"…웨이브, 현대차와 '차량용 OTT' 제휴, 2022",
+  },
+];
+
+function useInView<T extends HTMLElement>(threshold: number) {
+  const ref = useRef<T | null>(null);
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Plays when the block scrolls into view and replays every time it comes back.
+    const observer = new IntersectionObserver(([entry]) => setOn(entry.isIntersecting), { threshold, rootMargin: "0px 0px -8% 0px" });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return [ref, on] as const;
+}
+
+function EntertainmentUX() {
+  const [ref, on] = useInView<HTMLDivElement>(0.4);
+  return (
+    <div ref={ref} className={`eux${on ? " is-on" : ""}`}>
+      <span className="eux-badge">엔터테인먼트 중심의 UX</span>
+      <div className="eux-figures">
+        {ARTICLES.map((a) => (
+          <figure key={a.src} className="eux-figure">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={a.src} alt={a.caption} loading="lazy" decoding="async" />
+            <figcaption>{a.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Reproduced from the reference chart: two overlapping domes sized to the 긍정/부정 split, each with the
+// respondent's own words — the point being that "귀찮음" shows up in both, not just the negative side.
+const POSITIVE = { pct: 89, quote: "충전은 귀찮지만 경제성이 주는 만족이 크다" };
+const NEGATIVE = { pct: 11, quote: "전기차 충전은 번거롭고 귀찮은 일이다" };
+
+function ChargingDiscomfortChart() {
+  const [ref, on] = useInView<HTMLDivElement>(0.4);
+  return (
+    <div ref={ref} className={`cd${on ? " is-on" : ""}`}>
+      <div className="cd-chart">
+        <svg viewBox="0 0 560 210" className="cd-svg" role="img" aria-label="전기차 충전에 대한 긍정 89%, 부정 11% 응답 비율">
+          <path className="cd-dome cd-dome-neg" d="M 330 190 A 95 78 0 0 1 520 190 Z" />
+          <path className="cd-dome cd-dome-pos" d="M 20 190 A 245 168 0 0 1 510 190 Z" />
+        </svg>
+        <p className="cd-bubble cd-bubble-pos">{POSITIVE.quote}</p>
+        <p className="cd-bubble cd-bubble-neg">{NEGATIVE.quote}</p>
+        <div className="cd-stat cd-stat-pos">
+          <span className="cd-stat-label">긍정</span>
+          <span className="cd-stat-value">{POSITIVE.pct}%</span>
+        </div>
+        <div className="cd-stat cd-stat-neg">
+          <span className="cd-stat-label">부정</span>
+          <span className="cd-stat-value">{NEGATIVE.pct}%</span>
+        </div>
+      </div>
+      <p className="cd-note">긍정이든 부정이든, 충전에 대한 불편함은 항상 존재합니다.</p>
+      <p className="cd-source">컨슈머인사이트, 연례 자동차 조사, 전기차 운행 특성 응답률 (n = 729), 2022</p>
+    </div>
+  );
+}
+
+export default function BackgroundEV({ body }: { body: string }) {
+  return (
+    <>
+      <p>{body}</p>
+      <EntertainmentUX />
+      <ChargingDiscomfortChart />
+    </>
+  );
+}
