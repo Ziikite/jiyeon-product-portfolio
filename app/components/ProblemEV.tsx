@@ -59,7 +59,6 @@ export default function ProblemEV({ body, list, images }: { body: string; list: 
               <h4 className="pv-title">{col.title}</h4>
               <div className="pv-row">
                 <div className="pv-stage" tabIndex={0}>
-                  <span className="pv-grain" aria-hidden="true" />
                   <div className="pv-photo">
                     {src ? (
                       // eslint-disable-next-line @next/next/no-img-element
