@@ -50,11 +50,12 @@ const ROUTE_TEXT: Record<string, string> = {
 // Same phrases Solution 1's own guideline script highlights (app/components/RouteBriefing.tsx).
 const ROUTE_HIGHLIGHTS = ["현재 주유가 필요한 상태", "경유지로 설정해드릴까요?", "총 4km로, 21분 소요"];
 
-function highlightRouteText(text: string) {
+function highlightText(text: string, highlights: string[]) {
   const parts: (string | { hl: string })[] = [];
   let rest = text;
   while (rest) {
-    const hit = ROUTE_HIGHLIGHTS.map((h) => ({ h, at: rest.indexOf(h) }))
+    const hit = highlights
+      .map((h) => ({ h, at: rest.indexOf(h) }))
       .filter((x) => x.at !== -1)
       .sort((a, b) => a.at - b.at)[0];
     if (!hit) {
@@ -82,35 +83,35 @@ function RouteText({ variant }: { variant: Variant }) {
       <span className="td-route-avatar" aria-hidden="true">
         🚗
       </span>
-      <p className="td-route-bubble">{highlightRouteText(ROUTE_TEXT[variant])}</p>
+      <p className="td-route-bubble">{highlightText(ROUTE_TEXT[variant], ROUTE_HIGHLIGHTS)}</p>
     </div>
   );
 }
 
-// 정보 중첩: two announcement timelines, either run back-to-back (A) or deliberately overlapping (B).
-function OverlapDiagram({ variant }: { variant: Variant }) {
-  const overlap = variant === "b";
-  const bar1 = overlap ? { x: 46, w: 120 } : { x: 46, w: 96 };
-  const bar2 = overlap ? { x: 110, w: 96 } : { x: 150, w: 56 };
+// 정보 중첩: the actual guideline scripts from Solution 3 (app/lib/data.ts, "가이드라인(예외 상황)"/"가이드라인(기본 경로 안내)")
+// — A plays its two announcements strictly back-to-back (정보중첩 불가), B lets a user question cut into an in-progress
+// announcement and merges the reply (정보중첩 허용), exactly as InfoOverlap.tsx already renders in the full Solution 3 section.
+const OVERLAP_TEXT: Record<string, string[]> = {
+  a: ["전방 500m 도로 정체가 발생했습니다. 우측 차로로 이동해주세요.", "요청하신 가까운 주유소 위치는 2km 떨어진 용인 휴게소에 있습니다."],
+  b: ["주행 경로를 변경합니다. 기존 주행 경로에...", "오늘 오후에 비 와?", "60%로 비 예보가 있습니다. 기존 주행 경로에서 300m 앞 좌회전입니다."],
+};
+const OVERLAP_HIGHLIGHT = "60%로 비 예보가 있습니다";
+
+function OverlapText({ variant }: { variant: Variant }) {
   return (
-    <svg className="td-diagram" viewBox="0 0 220 140" role="img" aria-label={overlap ? "정보 중첩 허용 다이어그램" : "정보 중첩 불가 다이어그램"}>
-      <text x="8" y="48" className="td-diagram-label">
-        안내1
-      </text>
-      <text x="8" y="94" className="td-diagram-label">
-        안내2
-      </text>
-      <rect x={bar1.x} y="38" width={bar1.w} height="14" rx="7" className="td-bar td-bar-1" />
-      <rect x={bar2.x} y="84" width={bar2.w} height="14" rx="7" className="td-bar td-bar-2" />
-      {overlap && (
-        <>
-          <rect x={bar2.x} y="30" width={bar1.x + bar1.w - bar2.x} height="76" className="td-overlap-zone" />
-          <text x={(bar2.x + bar1.x + bar1.w) / 2} y="126" textAnchor="middle" className="td-diagram-note">
-            중첩 구간
-          </text>
-        </>
-      )}
-    </svg>
+    <div className="td-chat">
+      {OVERLAP_TEXT[variant].map((turn, i) => {
+        const isUser = turn.trim().endsWith("?");
+        return (
+          <div key={i} className="td-route">
+            <span className="td-route-avatar" aria-hidden="true">
+              {isUser ? "👤" : "🚗"}
+            </span>
+            <p className="td-route-bubble">{highlightText(turn, [OVERLAP_HIGHLIGHT])}</p>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -228,8 +229,8 @@ export default function TestDesign({ images }: { images: Record<string, string |
       >
         {scenario.variants.map((v, i) => {
           const src = images[`${scenario.key}-${v}`];
-          const isDiagram = scenario.key === "overlap" || scenario.key === "parking";
-          const isText = scenario.key === "route";
+          const isDiagram = scenario.key === "parking";
+          const isText = scenario.key === "route" || scenario.key === "overlap";
           return (
             <div key={v} className="td-col" style={{ ["--i" as string]: i } as CSSProperties}>
               <span className="td-tag">{v.toUpperCase()}안</span>
@@ -237,7 +238,7 @@ export default function TestDesign({ images }: { images: Record<string, string |
                 {scenario.key === "route" ? (
                   <RouteText variant={v} />
                 ) : scenario.key === "overlap" ? (
-                  <OverlapDiagram variant={v} />
+                  <OverlapText variant={v} />
                 ) : scenario.key === "parking" ? (
                   <ParkingDiagram variant={v} />
                 ) : src ? (
