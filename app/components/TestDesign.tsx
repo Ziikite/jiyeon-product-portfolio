@@ -47,13 +47,42 @@ const ROUTE_TEXT: Record<string, string> = {
   b: "경로를 브리핑해 드리겠습니다. 목적지 하이원리조트까지는 총 209km로 2시간 27분 예상됩니다. (중략) 현재 주유가 필요한 상태이며 ‘용인 휴게소’에서 주유하시는 것을 추천드립니다. 용인휴게소를 경유지로 설정해드릴까요?",
 };
 
+// Same phrases Solution 1's own guideline script highlights (app/components/RouteBriefing.tsx).
+const ROUTE_HIGHLIGHTS = ["현재 주유가 필요한 상태", "경유지로 설정해드릴까요?", "총 4km로, 21분 소요"];
+
+function highlightRouteText(text: string) {
+  const parts: (string | { hl: string })[] = [];
+  let rest = text;
+  while (rest) {
+    const hit = ROUTE_HIGHLIGHTS.map((h) => ({ h, at: rest.indexOf(h) }))
+      .filter((x) => x.at !== -1)
+      .sort((a, b) => a.at - b.at)[0];
+    if (!hit) {
+      parts.push(rest);
+      break;
+    }
+    if (hit.at > 0) parts.push(rest.slice(0, hit.at));
+    parts.push({ hl: hit.h });
+    rest = rest.slice(hit.at + hit.h.length);
+  }
+  return parts.map((p, i) =>
+    typeof p === "string" ? (
+      p
+    ) : (
+      <mark key={i} className="rb-mark">
+        {p.hl}
+      </mark>
+    )
+  );
+}
+
 function RouteText({ variant }: { variant: Variant }) {
   return (
     <div className="td-route">
       <span className="td-route-avatar" aria-hidden="true">
         🚗
       </span>
-      <p className="td-route-bubble">{ROUTE_TEXT[variant]}</p>
+      <p className="td-route-bubble">{highlightRouteText(ROUTE_TEXT[variant])}</p>
     </div>
   );
 }
