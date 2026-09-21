@@ -29,15 +29,12 @@ function Figure({ img }: { img: (typeof IMAGES)[number] }) {
   );
 }
 
-export default function AppendixEV({ body }: { body: string }) {
+export default function AppendixEV() {
   return (
-    <>
-      <p>{body}</p>
-      <div className="s2-items">
-        {IMAGES.map((img) => (
-          <Figure key={img.src} img={img} />
-        ))}
-      </div>
-    </>
+    <div className="s2-items">
+      {IMAGES.map((img) => (
+        <Figure key={img.src} img={img} />
+      ))}
+    </div>
   );
 }

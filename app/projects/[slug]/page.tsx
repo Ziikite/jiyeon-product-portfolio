@@ -173,7 +173,7 @@ export default async function ProjectPage({
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
                   <OutcomeVisual body={section.body} />
                 ) : project.slug === "gm-ev-charging" && section.label === "09 · Appendix" ? (
-                  <AppendixEV body={section.body} />
+                  <AppendixEV />
                 ) : project.slug === "gm-ev-charging" && section.label === "08 · Outcome" && section.list ? (
                   <OutcomeEV quotes={section.list} />
                 ) : project.slug === "gm-ev-charging" && section.label === "07 · Solution 3" ? (
