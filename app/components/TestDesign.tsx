@@ -92,7 +92,7 @@ function RouteText({ variant }: { variant: Variant }) {
 // route-change announcement gets cut off by a question — then diverge in how the resumed announcement handles it.
 // A (불가): resumes by restating the original line from the top, so the restated line visually overlaps/duplicates
 // the cut-off one instead of answering the question. B (허용): the reply folds the answer in and continues cleanly.
-type OverlapLine = { text: string; tone?: "ghost" | "pink" | "blue" | "bold" };
+type OverlapLine = { text: string; tone?: "ghost" | "mark" };
 type OverlapTurn = { speaker: "user" | "agent"; lines: OverlapLine[] };
 
 const OVERLAP_TURNS: Record<string, OverlapTurn[]> = {
@@ -103,8 +103,8 @@ const OVERLAP_TURNS: Record<string, OverlapTurn[]> = {
       speaker: "agent",
       lines: [
         { text: "주행 경로를 변경합니다. 기존 주행 경로에...", tone: "ghost" },
-        { text: "주행 경로를 변경합니다. 기존 주행 경로에서", tone: "pink" },
-        { text: "300미터 앞 좌회전입니다.", tone: "blue" },
+        { text: "주행 경로를 변경합니다. 기존 주행 경로에서", tone: "mark" },
+        { text: "300미터 앞 좌회전입니다.", tone: "mark" },
       ],
     },
   ],
@@ -114,8 +114,8 @@ const OVERLAP_TURNS: Record<string, OverlapTurn[]> = {
     {
       speaker: "agent",
       lines: [
-        { text: "60%로 비 예보가 있습니다.", tone: "blue" },
-        { text: "기존 주행 경로에서 300미터 앞 좌회전입니다.", tone: "bold" },
+        { text: "60%로 비 예보가 있습니다.", tone: "mark" },
+        { text: "기존 주행 경로에서 300미터 앞 좌회전입니다.", tone: "mark" },
       ],
     },
   ],
@@ -132,11 +132,17 @@ function OverlapText({ variant }: { variant: Variant }) {
             </span>
           )}
           <div className="td-row-bubble">
-            {turn.lines.map((l, li) => (
-              <p key={li} className={l.tone ? `td-line-${l.tone}` : undefined}>
-                {l.text}
-              </p>
-            ))}
+            {turn.lines.map((l, li) =>
+              l.tone === "ghost" ? (
+                <p key={li} className="td-line-ghost">
+                  {l.text}
+                </p>
+              ) : (
+                <p key={li}>
+                  <span className="td-mark">{l.text}</span>
+                </p>
+              )
+            )}
           </div>
           {turn.speaker === "agent" && (
             <span className="td-row-avatar" aria-hidden="true">
