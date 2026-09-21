@@ -42,10 +42,10 @@ const CAPTIONS: Record<string, string> = {
   "parking-b": "경로변경 이유 상세 설명",
 };
 
-// 경로 브리핑: the variant is a voice script, not a screen — show the text itself instead of a cropped UI screenshot.
+// 경로 브리핑: the variant is a voice script, not a screen — show the full text itself (verbatim from the Solution 1 guideline scripts) instead of a cropped UI screenshot.
 const ROUTE_TEXT: Record<string, string> = {
-  a: "총 42km, 38분 소요됩니다. 3km 구간에서 정체가 있어요.",
-  b: "총 42km, 38분 소요되며 3km 구간 정체가 있어요. 연료 잔량 18%로 주유가 필요해요. 300m 앞 주유소를 경유지로 설정해드릴까요?",
+  a: "경로를 브리핑해 드리겠습니다. 현 위치에서 목적지 한국GM까지는 총 4km로, 21분 소요로 예상됩니다. 모든 구간 교통량은 현재 원활합니다. 안전한 운전 되십시오.",
+  b: "경로를 브리핑해 드리겠습니다. 목적지 하이원리조트까지는 총 209km로 2시간 27분 예상됩니다. (중략) 현재 주유가 필요한 상태이며 ‘용인 휴게소’에서 주유하시는 것을 추천드립니다. 용인휴게소를 경유지로 설정해드릴까요?",
 };
 
 function RouteText({ variant }: { variant: Variant }) {
@@ -197,10 +197,11 @@ export default function TestDesign({ images }: { images: Record<string, string |
           const has = scenario.variants.includes(v);
           const src = images[`${scenario.key}-${v}`];
           const isDiagram = scenario.key === "overlap" || scenario.key === "parking";
+          const isText = scenario.key === "route";
           return (
             <div key={v} className={`td-col${has ? "" : " is-empty"}`} style={{ ["--i" as string]: i } as CSSProperties}>
               <span className="td-tag">{v.toUpperCase()}안</span>
-              <div className={`td-card${isDiagram ? " td-card--diagram" : ""}`}>
+              <div className={`td-card${isDiagram ? " td-card--diagram" : ""}${isText ? " td-card--text" : ""}`}>
                 {!has ? (
                   <span className="td-none">—</span>
                 ) : scenario.key === "route" ? (
