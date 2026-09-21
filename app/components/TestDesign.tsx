@@ -21,7 +21,6 @@ const PHASES = [
   { label: "주행 중", span: 3 },
   { label: "도착", span: 1 },
 ];
-const VARIANTS: Variant[] = ["a", "b", "c"];
 const INTERVAL = 3600;
 
 // One line under every card explaining what that variant tested.
@@ -192,19 +191,21 @@ export default function TestDesign({ images }: { images: Record<string, string |
         </div>
       </div>
 
-      <div key={scenario.key} className="td-panel" role="tabpanel">
-        {VARIANTS.map((v, i) => {
-          const has = scenario.variants.includes(v);
+      <div
+        key={scenario.key}
+        className="td-panel"
+        role="tabpanel"
+        style={{ gridTemplateColumns: `repeat(${scenario.variants.length}, minmax(0, 1fr))` }}
+      >
+        {scenario.variants.map((v, i) => {
           const src = images[`${scenario.key}-${v}`];
           const isDiagram = scenario.key === "overlap" || scenario.key === "parking";
           const isText = scenario.key === "route";
           return (
-            <div key={v} className={`td-col${has ? "" : " is-empty"}`} style={{ ["--i" as string]: i } as CSSProperties}>
+            <div key={v} className="td-col" style={{ ["--i" as string]: i } as CSSProperties}>
               <span className="td-tag">{v.toUpperCase()}안</span>
               <div className={`td-card${isDiagram ? " td-card--diagram" : ""}${isText ? " td-card--text" : ""}`}>
-                {!has ? (
-                  <span className="td-none">—</span>
-                ) : scenario.key === "route" ? (
+                {scenario.key === "route" ? (
                   <RouteText variant={v} />
                 ) : scenario.key === "overlap" ? (
                   <OverlapDiagram variant={v} />
@@ -224,7 +225,7 @@ export default function TestDesign({ images }: { images: Record<string, string |
                   </div>
                 )}
               </div>
-              {has && CAPTIONS[`${scenario.key}-${v}`] && <p className="td-caption">{CAPTIONS[`${scenario.key}-${v}`]}</p>}
+              {CAPTIONS[`${scenario.key}-${v}`] && <p className="td-caption">{CAPTIONS[`${scenario.key}-${v}`]}</p>}
             </div>
           );
         })}

@@ -1197,23 +1197,19 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .td-col { display: flex; flex-direction: column; gap: 8px; animation: td-in .5s cubic-bezier(.22,.8,.2,1) calc(var(--i) * .08s) both; }
 @keyframes td-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .td-tag { align-self: flex-start; padding: 3px 12px; border-radius: 6px; background: #6f7b8a; font-size: 13px; font-weight: 700; color: #fff; }
-.td-col.is-empty .td-tag { background: #c9ced4; }
 .td-card { aspect-ratio: 3 / 2; overflow: hidden; border-radius: 10px; background: #111; border: 1px solid #262626; }
 .td-card img { display: block; width: 100%; height: 100%; object-fit: cover; max-width: none; }
 .td-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 100%; padding: 8px; text-align: center; background: repeating-linear-gradient(45deg, #1b1b1b, #1b1b1b 10px, #222 10px, #222 20px); color: #b5b5b0; }
 .td-placeholder-name { font-size: 12.5px; font-weight: 600; }
 .td-placeholder-size { font-size: 11.5px; font-variant-numeric: tabular-nums; letter-spacing: .02em; opacity: .75; }
-.td-col.is-empty .td-card { display: grid; place-items: center; background: transparent; border: 1.5px dashed #d0d0cb; }
-.td-none { font-size: 22px; color: #b9b9b3; }
 .td-caption { margin: 0; padding: 0 2px; font-size: 12px; line-height: 1.45; color: #6b6b66; }
-.td-col.is-empty .td-caption { display: none; }
 
 .td-card--diagram { background: none; border: none; }
-.td-card--text { aspect-ratio: auto; }
+.td-card.td-card--text { aspect-ratio: auto; background: none; border: none; }
 
-.td-route { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px; }
-.td-route-avatar { flex: none; font-size: 18px; line-height: 1; }
-.td-route-bubble { margin: 0; flex: 1; font-size: 12.5px; line-height: 1.6; color: #f2f2ee; }
+.td-route { display: flex; align-items: flex-end; gap: 8px; }
+.td-route-avatar { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #eef0f2; font-size: 15px; }
+.td-route-bubble { position: relative; margin: 0; flex: 1; padding: 12px 15px; border-radius: 16px; border-bottom-left-radius: 4px; background: #2b2e35; color: #fff; font-size: 12.5px; line-height: 1.6; }
 
 .td-diagram { display: block; width: 100%; height: 100%; }
 .td-diagram-label { font-size: 10px; fill: #8a8a84; font-weight: 600; }
