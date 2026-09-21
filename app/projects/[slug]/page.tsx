@@ -33,6 +33,7 @@ import TestDesignBlock from "@/app/components/TestDesignBlock";
 import RouteBriefingBlock from "@/app/components/RouteBriefingBlock";
 import LaneChangeBlock from "@/app/components/LaneChangeBlock";
 import InfoOverlap from "@/app/components/InfoOverlap";
+import OutcomeCompare from "@/app/components/OutcomeCompare";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -162,6 +163,8 @@ export default async function ProjectPage({
                   <SolutionVisual body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
                   <OutcomeVisual body={section.body} />
+                ) : project.slug === "gm-voice-ux" && section.label === "09 · Outcome" ? (
+                  <OutcomeCompare body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "06 · Solution 1" && section.list ? (
                   <RouteBriefingBlock body={section.body} list={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "07 · Solution 2" && section.list ? (
