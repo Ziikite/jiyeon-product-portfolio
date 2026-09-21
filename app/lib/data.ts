@@ -582,7 +582,6 @@ export const projects: Project[] = [
           "\"충전 상태를 계속 확인해야 해요\" → 충전 상태 변화에 대한 피드백이 불충분 → 사용자가 끊임없이 상황을 감시해야 함",
           "\"드라마는 집중 안 돼요\" → 충전 상태 확인으로 집중이 어려움 → 몰입보다 상태 확인이 우선 과제",
         ],
-        image: "/projects/detail/gm-ev-charging-3.png",
       },
       {
         label: "04 · Strategy",
