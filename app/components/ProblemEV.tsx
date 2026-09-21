@@ -40,6 +40,42 @@ function useInView<T extends HTMLElement>(threshold: number) {
   return [ref, on] as const;
 }
 
+// Shows one quote at a time, crossfading to the next every few seconds instead of stacking both — pauses while off screen.
+function QuoteCycler({ quotes, running }: { quotes: [string, string]; running: boolean }) {
+  const [i, setI] = useState(0);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!running) {
+      setVisible(false);
+      return;
+    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setVisible(true);
+      return;
+    }
+    setVisible(true);
+    let fadeIn = 0;
+    const cycle = window.setInterval(() => {
+      setVisible(false); // fade the current quote out
+      fadeIn = window.setTimeout(() => {
+        setI((v) => (v + 1) % quotes.length);
+        setVisible(true); // then fade the next one in
+      }, 450);
+    }, 3400);
+    return () => {
+      window.clearInterval(cycle);
+      window.clearTimeout(fadeIn);
+    };
+  }, [running, quotes.length]);
+  return (
+    <div className="pv-quotes">
+      <p className={`pv-quote${visible ? " is-visible" : ""}`} tabIndex={0}>
+        {quotes[i]}
+      </p>
+    </div>
+  );
+}
+
 export default function ProblemEV({ body, list, images }: { body: string; list: string[]; images: Record<string, string | null> }) {
   const [ref, on] = useInView<HTMLDivElement>(0.25);
   const introEnd = body.indexOf("사용자의 핵심 과업은");
@@ -72,13 +108,7 @@ export default function ProblemEV({ body, list, images }: { body: string; list: 
                       </div>
                     )}
                   </div>
-                  <div className="pv-quotes">
-                    {col.quotes.map((q) => (
-                      <p key={q} className="pv-quote" tabIndex={0}>
-                        {q}
-                      </p>
-                    ))}
-                  </div>
+                  <QuoteCycler quotes={col.quotes} running={on} />
                 </div>
                 <svg className="pv-arrow" viewBox="0 0 28 18" aria-hidden="true">
                   <path d="M2 2 L26 2 L14 17 Z" />
