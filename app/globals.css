@@ -1402,7 +1402,7 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .cd.is-on .cd-bubble { opacity: 1; transform: translateY(0); }
 .cd-bubble-neg { transition-delay: .65s; }
 .cd-note { margin: 18px auto 0; max-width: 560px; text-align: center; font-size: 14px; font-weight: 700; color: #1d1d1b; }
-.cd-source { margin: 6px auto 0; max-width: 560px; text-align: center; font-size: 10.5px; color: #9a9a95; }
+.cd-source { margin: 6px auto 0; max-width: 560px; text-align: center; font-size: 9px; color: #9a9a95; }
 @media (max-width: 640px) {
   .eux-figures { flex-direction: column; }
   .cd-bubble { max-width: 150px; font-size: 11.5px; padding: 8px 10px; }
