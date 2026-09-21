@@ -1420,11 +1420,12 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 .pv-row { display: flex; align-items: center; gap: 24px; }
 .pv-stage { position: relative; flex: 0 0 300px; aspect-ratio: 3 / 2; background: transparent; }
 .pv-grain {
-  position: absolute; left: -4%; top: 4%; width: 62%; height: 92%; border-radius: 46% 54% 52% 48% / 48% 46% 54% 52%;
+  position: absolute; left: -6%; top: 2%; width: 66%; height: 96%; border-radius: 42% 58% 55% 45% / 55% 42% 58% 45%;
   background-color: #141414;
-  background-image: radial-gradient(circle, #6b6b6b 1px, transparent 1.6px);
-  background-size: 5px 5px;
-  filter: blur(.2px);
+  background-image: radial-gradient(circle, #8a8a8a 1.2px, transparent 1.7px);
+  background-size: 4px 4px;
+  mask-image: radial-gradient(ellipse 60% 55% at 45% 50%, #000 55%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 45% 50%, #000 55%, transparent 92%);
 }
 .pv-photo { position: absolute; right: 0; top: 0; width: 64%; height: 100%; border-radius: 16px; overflow: hidden; transition: transform .4s cubic-bezier(.22,.8,.2,1); }
 .pv-stage:hover .pv-photo, .pv-photo:focus-within { transform: scale(1.03); }
