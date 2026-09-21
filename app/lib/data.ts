@@ -7,7 +7,7 @@ export const profile = {
     "핀테크, 클라우드, 모빌리티, 커머스, 딜리버리 등 도메인이 다른 프로젝트에서 정성적으로 366명 이상의 사용자 데이터를 분석하며, 사용자 맥락에 맞춰 적용가능한 솔루션을 도출해왔습니다.",
   email: "thingzwell@gmail.com",
   phone: "010-2835-3619",
-  resumeUrl: "https://drive.google.com/file/d/REPLACE_WITH_YOUR_FILE_ID/view",
+  resumeUrl: "https://drive.google.com/file/d/1sIo2LergOQy2tsaw9t5FXeh84NpFBiUS/view?usp=sharing",
 };
 
 export const strengths = [
