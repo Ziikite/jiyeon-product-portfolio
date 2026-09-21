@@ -35,6 +35,7 @@ import LaneChangeBlock from "@/app/components/LaneChangeBlock";
 import InfoOverlap from "@/app/components/InfoOverlap";
 import OutcomeCompare from "@/app/components/OutcomeCompare";
 import BackgroundEV from "@/app/components/BackgroundEV";
+import ProblemEVBlock from "@/app/components/ProblemEVBlock";
 import { projects, getProject } from "@/app/lib/data";
 
 export function generateStaticParams() {
@@ -164,6 +165,8 @@ export default async function ProjectPage({
                   <SolutionVisual body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
                   <OutcomeVisual body={section.body} />
+                ) : project.slug === "gm-ev-charging" && section.label === "02 · Problem" && section.list ? (
+                  <ProblemEVBlock body={section.body} list={section.list} />
                 ) : project.slug === "gm-ev-charging" && section.label === "01 · Background" ? (
                   <BackgroundEV body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "09 · Outcome" ? (
