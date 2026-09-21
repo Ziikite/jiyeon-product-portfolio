@@ -55,37 +55,39 @@ function useCount(from: number, to: number, run: boolean, delay: number, duratio
   return value;
 }
 
-function OutcomeColumn({ name, result, quotes, visible }: { name: string; result: Result; quotes: [string, string]; visible: boolean }) {
+function OutcomeRow({ name, result, quotes, visible }: { name: string; result: Result; quotes: [string, string]; visible: boolean }) {
   const oldH = (result.from / SCALE) * BAR_MAX;
   const newH = (result.to / SCALE) * BAR_MAX;
   const value = useCount(result.from, result.to, visible, 500, 1300);
 
   return (
-    <div className="vo-chart">
-      <div className="vo-title">
-        {name}
-        <span className="vo-chip">{result.pct}%↑</span>
-      </div>
-      <div className="vo-plot" style={{ height: TOP + BAR_MAX }}>
-        <div className="vo-col vo-col-old">
-          <span className="vo-value vo-value-old" style={{ bottom: oldH + 8 }}>
-            {result.from.toFixed(2)}
-          </span>
-          <div className="vo-bar vo-bar-old" style={{ height: oldH }} />
+    <div className="vo-row">
+      <div className="vo-chart">
+        <div className="vo-title">
+          {name}
+          <span className="vo-chip">{result.pct}%↑</span>
         </div>
-        <div className="vo-col vo-col-new">
-          <span
-            className="vo-value vo-value-new"
-            style={{ ["--from" as string]: `${oldH + 8}px`, ["--to" as string]: `${newH + 8}px` }}
-          >
-            {value.toFixed(2)}
-          </span>
-          <div className="vo-bar vo-bar-new" style={{ ["--from" as string]: `${oldH}px`, ["--to" as string]: `${newH}px` }} />
+        <div className="vo-plot" style={{ height: TOP + BAR_MAX }}>
+          <div className="vo-col vo-col-old">
+            <span className="vo-value vo-value-old" style={{ bottom: oldH + 8 }}>
+              {result.from.toFixed(2)}
+            </span>
+            <div className="vo-bar vo-bar-old" style={{ height: oldH }} />
+          </div>
+          <div className="vo-col vo-col-new">
+            <span
+              className="vo-value vo-value-new"
+              style={{ ["--from" as string]: `${oldH + 8}px`, ["--to" as string]: `${newH + 8}px` }}
+            >
+              {value.toFixed(2)}
+            </span>
+            <div className="vo-bar vo-bar-new" style={{ ["--from" as string]: `${oldH}px`, ["--to" as string]: `${newH}px` }} />
+          </div>
         </div>
-      </div>
-      <div className="vo-labels">
-        <span>기존</span>
-        <span className="is-new">개선 후</span>
+        <div className="vo-labels">
+          <span>기존</span>
+          <span className="is-new">개선 후</span>
+        </div>
       </div>
       <div className="vo-quotes">
         {quotes.map((q, i) => (
@@ -122,7 +124,7 @@ export default function OutcomeCompare({ body }: { body: string }) {
       {parsed.intro && <p>{parsed.intro}</p>}
       <div ref={ref} className={`vo${visible ? " is-visible" : ""}`}>
         {METRICS.map((name, i) => (
-          <OutcomeColumn
+          <OutcomeRow
             key={name}
             name={name}
             result={parsed.results[i]}
