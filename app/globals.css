@@ -1493,3 +1493,15 @@ section.block { padding: 88px var(--side); border-top: 1px solid var(--line); }
 /* GM EV Charging: Strategy — end-to-end user flow (navigation lane -> charging-station lane) */
 .sf-scroll { margin-top: 44px; }
 .sf-image { display: block; width: 100%; height: auto; }
+
+/* GM EV Charging: Solution 1 — two notes on the charging screen (AnnotatedScreen boxes point at them) */
+.s1-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; max-width: 640px; }
+.s1-note { padding: 18px 20px; border-radius: 14px; background: #e3fbf3; }
+.s1-note h4 { margin: 0 0 10px; font-size: 14.5px; font-weight: 800; line-height: 1.4; letter-spacing: -.01em; color: #0d3d28; }
+.s1-note ul { margin: 0; padding: 0; list-style: none; }
+.s1-note li { position: relative; margin: 0 0 7px; padding-left: 16px; font-size: 12.5px; line-height: 1.55; color: #1d1d1b; }
+.s1-note li::before { content: ""; position: absolute; left: 0; top: .6em; width: 5px; height: 5px; border-radius: 50%; background: #0d9e6f; }
+.s1-note li:last-child { margin-bottom: 0; }
+@media (max-width: 640px) {
+  .s1-notes { grid-template-columns: minmax(0, 1fr); }
+}
