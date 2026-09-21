@@ -50,25 +50,41 @@ function EntertainmentUX() {
 const POSITIVE = { pct: 89, quote: "충전은 귀찮지만 경제성이 주는 만족이 크다" };
 const NEGATIVE = { pct: 11, quote: "전기차 충전은 번거롭고 귀찮은 일이다" };
 
+// Bubble radii are area-proportional (r ∝ √percent), the honest way to size a bubble chart.
+const BUBBLE_K = 15.9;
+const posR = Math.round(BUBBLE_K * Math.sqrt(POSITIVE.pct));
+const negR = Math.round(BUBBLE_K * Math.sqrt(NEGATIVE.pct));
+const posCx = 175;
+const negCx = 430;
+const cy = 165;
+
 function ChargingDiscomfortChart() {
   const [ref, on] = useInView<HTMLDivElement>(0.4);
   return (
     <div ref={ref} className={`cd${on ? " is-on" : ""}`}>
       <div className="cd-chart">
-        <svg viewBox="0 0 560 210" className="cd-svg" role="img" aria-label="전기차 충전에 대한 긍정 89%, 부정 11% 응답 비율">
-          <path className="cd-dome cd-dome-neg" d="M 330 190 A 95 78 0 0 1 520 190 Z" />
-          <path className="cd-dome cd-dome-pos" d="M 20 190 A 245 168 0 0 1 510 190 Z" />
+        <svg viewBox="0 0 560 300" className="cd-svg" role="img" aria-label="전기차 충전에 대한 긍정 89%, 부정 11% 응답 비율">
+          <circle className="cd-bubble-circle cd-bubble-pos-circle" cx={posCx} cy={cy} r={posR} />
+          <circle className="cd-bubble-circle cd-bubble-neg-circle" cx={negCx} cy={cy} r={negR} />
+          <text x={posCx} y={cy - 8} textAnchor="middle" className="cd-circle-value">
+            {POSITIVE.pct}%
+          </text>
+          <text x={posCx} y={cy + 16} textAnchor="middle" className="cd-circle-label">
+            긍정
+          </text>
+          <text x={negCx} y={cy - 2} textAnchor="middle" className="cd-circle-value cd-circle-value-neg">
+            {NEGATIVE.pct}%
+          </text>
+          <text x={negCx} y={cy + 14} textAnchor="middle" className="cd-circle-label cd-circle-label-neg">
+            부정
+          </text>
         </svg>
-        <p className="cd-bubble cd-bubble-pos">{POSITIVE.quote}</p>
-        <p className="cd-bubble cd-bubble-neg">{NEGATIVE.quote}</p>
-        <div className="cd-stat cd-stat-pos">
-          <span className="cd-stat-label">긍정</span>
-          <span className="cd-stat-value">{POSITIVE.pct}%</span>
-        </div>
-        <div className="cd-stat cd-stat-neg">
-          <span className="cd-stat-label">부정</span>
-          <span className="cd-stat-value">{NEGATIVE.pct}%</span>
-        </div>
+        <p className="cd-bubble cd-bubble-pos" style={{ left: `${((posCx - posR) / 560) * 100}%`, top: `${((cy - posR) / 300) * 100 - 14}%` }}>
+          {POSITIVE.quote}
+        </p>
+        <p className="cd-bubble cd-bubble-neg" style={{ left: `${((negCx - 60) / 560) * 100}%`, top: `${((cy - negR) / 300) * 100 - 20}%` }}>
+          {NEGATIVE.quote}
+        </p>
       </div>
       <p className="cd-note">긍정이든 부정이든, 충전에 대한 불편함은 항상 존재합니다.</p>
       <p className="cd-source">컨슈머인사이트, 연례 자동차 조사, 전기차 운행 특성 응답률 (n = 729), 2022</p>
