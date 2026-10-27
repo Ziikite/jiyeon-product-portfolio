@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 import Header from "@/app/components/Header";
 import ProjectToc from "@/app/components/ProjectToc";
 import InquiryPieChart from "@/app/components/InquiryPieChart";
@@ -43,32 +42,22 @@ import Solution2EV from "@/app/components/Solution2EV";
 import Solution3EV from "@/app/components/Solution3EV";
 import OutcomeEV from "@/app/components/OutcomeEV";
 import AppendixEV from "@/app/components/AppendixEV";
-import { projects, getProject } from "@/app/lib/data";
+import { getContent } from "@/app/lib/content";
+import { glnHighlights } from "@/app/lib/en/gln-faq";
+import { localePath, ui, type Locale } from "@/app/lib/i18n";
 
-export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
-}
+// gln-faq sentences highlighted inside the body text; must be exact substrings of each locale's body.
+const GLN_HIGHLIGHTS = {
+  ko: {
+    strategy: "(1) 실패 상황의 명확성 강화, (2) 사용자 불안 완화, (3) 자발적 해결 가능성 확대를 달성하고자 하였습니다.",
+    problem: "FAQ에서 찾기 어려운 문제 상황으로 이어져 결국 FAQ 탐색을 포기하고 CS로 직접 문의하게 만들었습니다.",
+  },
+  en: glnHighlights,
+};
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const project = getProject(slug);
-  if (!project) return {};
-  return {
-    title: `${project.title.replace("\n", " ")} — 김지연`,
-    description: project.summary,
-  };
-}
-
-export default async function ProjectPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+export default function ProjectView({ slug, locale }: { slug: string; locale: Locale }) {
+  const { projects, getProject } = getContent(locale);
+  const t = ui[locale];
   const project = getProject(slug);
   if (!project) notFound();
 
@@ -83,10 +72,10 @@ export default async function ProjectPage({
 
   return (
     <main>
-      <Header />
+      <Header locale={locale} />
       <ProjectToc items={tocItems} />
-      <Link className="back-link" href="/#work">
-        ← 전체 프로젝트
+      <Link className="back-link" href={localePath(locale, "/#work")}>
+        {t.allProjects}
       </Link>
 
       <div className="project-body">
@@ -160,88 +149,89 @@ export default async function ProjectPage({
                 })()}
                 {project.slug === "gln-faq" && section.label === "04 · Strategy" && section.list ? (
                   <StrategySection
+                    locale={locale}
                     body={section.body}
-                    highlight="(1) 실패 상황의 명확성 강화, (2) 사용자 불안 완화, (3) 자발적 해결 가능성 확대를 달성하고자 하였습니다."
+                    highlight={GLN_HIGHLIGHTS[locale].strategy}
                     list={section.list}
                   />
                 ) : project.slug === "clas-conversion" && section.label === "02 · Problem" ? (
-                  <ProblemTable body={section.body} />
+                  <ProblemTable locale={locale} body={section.body} />
                 ) : project.slug === "clas-conversion" && section.label === "03 · Cause" && section.list ? (
-                  <CauseVisual body={section.body} list={section.list} />
+                  <CauseVisual locale={locale} body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "04 · Solution" && section.list ? (
-                  <SolutionVisual body={section.body} list={section.list} />
+                  <SolutionVisual locale={locale} body={section.body} list={section.list} />
                 ) : project.slug === "clas-conversion" && section.label === "05 · Outcome" ? (
-                  <OutcomeVisual body={section.body} />
+                  <OutcomeVisual locale={locale} body={section.body} />
                 ) : project.slug === "gm-ev-charging" && section.label === "09 · Appendix" ? (
-                  <AppendixEV />
+                  <AppendixEV locale={locale} />
                 ) : project.slug === "gm-ev-charging" && section.label === "08 · Outcome" && section.list ? (
-                  <OutcomeEV quotes={section.list} />
+                  <OutcomeEV locale={locale} quotes={section.list} />
                 ) : project.slug === "gm-ev-charging" && section.label === "07 · Solution 3" ? (
-                  <Solution3EV />
+                  <Solution3EV locale={locale} />
                 ) : project.slug === "gm-ev-charging" && section.label === "06 · Solution 2" ? (
-                  <Solution2EV />
+                  <Solution2EV locale={locale} />
                 ) : project.slug === "gm-ev-charging" && section.label === "05 · Solution 1" ? (
-                  <Solution1EV />
+                  <Solution1EV locale={locale} />
                 ) : project.slug === "gm-ev-charging" && section.label === "04 · Strategy" ? (
-                  <StrategyEV />
+                  <StrategyEV locale={locale} />
                 ) : project.slug === "gm-ev-charging" && section.label === "03 · Cause" && section.list ? (
-                  <CauseVisualEV body={section.body} list={section.list} />
+                  <CauseVisualEV locale={locale} body={section.body} list={section.list} />
                 ) : project.slug === "gm-ev-charging" && section.label === "02 · Problem" && section.list ? (
-                  <ProblemEVBlock body={section.body} list={section.list} />
+                  <ProblemEVBlock locale={locale} body={section.body} list={section.list} />
                 ) : project.slug === "gm-ev-charging" && section.label === "01 · Background" ? (
-                  <BackgroundEV body={section.body} />
+                  <BackgroundEV locale={locale} body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "09 · Outcome" ? (
-                  <OutcomeCompare body={section.body} />
+                  <OutcomeCompare locale={locale} body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "06 · Solution 1" && section.list ? (
-                  <RouteBriefingBlock body={section.body} list={section.list} />
+                  <RouteBriefingBlock locale={locale} body={section.body} list={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "07 · Solution 2" && section.list ? (
-                  <LaneChangeBlock body={section.body} list={section.list} />
+                  <LaneChangeBlock locale={locale} body={section.body} list={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "08 · Solution 3" && section.list ? (
-                  <InfoOverlap body={section.body} quotes={section.list} />
+                  <InfoOverlap locale={locale} body={section.body} quotes={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "05 · Test Design" ? (
-                  <TestDesignBlock body={section.body} />
+                  <TestDesignBlock locale={locale} body={section.body} />
                 ) : project.slug === "gm-voice-ux" && section.label === "04 · Strategy" && section.list ? (
-                  <UxFactors body={section.body} list={section.list} />
+                  <UxFactors locale={locale} body={section.body} list={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "03 · Cause" && section.list && section.image ? (
-                  <CauseSection body={section.body} list={section.list} image={section.image} />
+                  <CauseSection locale={locale} body={section.body} list={section.list} image={section.image} />
                 ) : project.slug === "gm-voice-ux" && section.label === "02 · Problem" && section.list ? (
-                  <ShadowingProblem body={section.body} quotes={section.list} />
+                  <ShadowingProblem locale={locale} body={section.body} quotes={section.list} />
                 ) : project.slug === "gm-voice-ux" && section.label === "01 · Background" ? (
-                  <VoiceBackground body={section.body} />
+                  <VoiceBackground locale={locale} body={section.body} />
                 ) : project.slug === "cloud-migration" && section.label === "07 · Problem 3" ? (
                   <ExpertGapProblem body={section.body} />
                 ) : project.slug === "cloud-migration" && section.label === "08 · Solution 3" ? (
-                  <MonitorSolution body={section.body} image={section.image} />
+                  <MonitorSolution locale={locale} body={section.body} image={section.image} />
                 ) : project.slug === "cloud-migration" && section.label === "05 · Problem 2" ? (
-                  <ToolsProblemBlock body={section.body} />
+                  <ToolsProblemBlock locale={locale} body={section.body} />
                 ) : project.slug === "cloud-migration" && section.label === "06 · Solution 2" && section.list ? (
-                  <ToolSolution body={section.body} image={section.image} labels={section.list} />
+                  <ToolSolution locale={locale} body={section.body} image={section.image} labels={section.list} />
                 ) : project.slug === "cloud-migration" && section.label === "03 · Problem 1" ? (
                   <ProblemAgent body={section.body} />
                 ) : project.slug === "cloud-migration" && section.label === "04 · Solution 1" && section.list ? (
-                  <SurveySolution body={section.body} image={section.image} labels={section.list} />
+                  <SurveySolution locale={locale} body={section.body} image={section.image} labels={section.list} />
                 ) : project.slug === "cloud-migration" && section.label === "02 · Strategy" ? (
                   <MigrationStrategy body={section.body} />
                 ) : project.slug === "cloud-migration" && section.label === "01 · Background" ? (
-                  <BackgroundVisual body={section.body} image={section.image} />
+                  <BackgroundVisual locale={locale} body={section.body} image={section.image} />
                 ) : project.slug === "clas-conversion" && section.label === "01 · Service" ? (
                   <>
                     <p>{section.body}</p>
-                    <ServiceCards />
+                    <ServiceCards locale={locale} />
                   </>
                 ) : project.slug === "gln-faq" && section.label === "09 · Appendix" ? (
-                  <AppendixSection body={section.body} />
+                  <AppendixSection locale={locale} body={section.body} />
                 ) : project.slug === "gln-faq" && section.label === "08 · Outcome" && section.list ? (
-                  <OutcomeCharts body={section.body} list={section.list} />
+                  <OutcomeCharts locale={locale} body={section.body} list={section.list} />
                 ) : (
                   <>
                     {project.slug === "gln-faq" && section.label === "02 · Problem" ? (
                       <HighlightOnScroll
                         text={section.body}
-                        highlight="FAQ에서 찾기 어려운 문제 상황으로 이어져 결국 FAQ 탐색을 포기하고 CS로 직접 문의하게 만들었습니다."
+                        highlight={GLN_HIGHLIGHTS[locale].problem}
                       />
                     ) : pinnedFaq ? (
-                      <BeforeAfterFaq body={section.body} kind={pinnedFaq} />
+                      <BeforeAfterFaq locale={locale} body={section.body} kind={pinnedFaq} />
                     ) : (
                       <p>{section.body}</p>
                     )}
@@ -253,13 +243,13 @@ export default async function ProjectPage({
                       </ul>
                     )}
                     {project.slug === "gln-faq" && i === 0 ? (
-                      <InquiryPieChart />
+                      <InquiryPieChart locale={locale} />
                     ) : project.slug === "gln-faq" && section.label === "02 · Problem" ? (
-                      <ProblemCascade />
+                      <ProblemCascade locale={locale} />
                     ) : project.slug === "gln-faq" && section.label === "03 · Cause" ? (
                       <>
-                        <VocAccordion />
-                        <InterviewMatrix />
+                        <VocAccordion locale={locale} />
+                        <InterviewMatrix locale={locale} />
                       </>
                     ) : (
                       section.image && (
@@ -284,12 +274,12 @@ export default async function ProjectPage({
         </div>
       </div>
 
-      <nav className="project-pager" aria-label="다른 프로젝트">
-        <Link href={`/projects/${prev.slug}`}>
+      <nav className="project-pager" aria-label={t.moreProjects}>
+        <Link href={localePath(locale, `/projects/${prev.slug}`)}>
           <p>← Previous</p>
           <h4>{prev.title.replace("\n", " ")}</h4>
         </Link>
-        <Link className="next" href={`/projects/${next.slug}`}>
+        <Link className="next" href={localePath(locale, `/projects/${next.slug}`)}>
           <p>Next →</p>
           <h4>{next.title.replace("\n", " ")}</h4>
         </Link>

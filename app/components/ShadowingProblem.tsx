@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import ShadowingVisual, { type ShadowArt } from "@/app/components/ShadowingVisual";
+import type { Locale } from "@/app/lib/i18n";
 
 const SVG_FILE = "gm-voice-ux-shadowing.svg";
 const PHOTO = "/projects/detail/gm-voice-ux-shadowing.png";
@@ -21,9 +22,9 @@ function readArt(): ShadowArt | null {
   }
 }
 
-export default function ShadowingProblem({ body, quotes }: { body: string; quotes: string[] }) {
+export default function ShadowingProblem({ body, quotes, locale = "ko" }: { body: string; quotes: string[]; locale?: Locale }) {
   const art = readArt();
   const clean = quotes.map((q) => q.replace(/^["“]|["”]$/g, ""));
   if (!art) return <p>{body}</p>;
-  return <ShadowingVisual body={body} quotes={clean} photo={PHOTO} art={art} />;
+  return <ShadowingVisual body={body} quotes={clean} photo={PHOTO} art={art} locale={locale} />;
 }

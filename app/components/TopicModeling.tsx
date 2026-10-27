@@ -1,72 +1,144 @@
 "use client";
 
 import { useId, useState } from "react";
-
-const BEFORE_CATEGORIES = ["전체", "결제", "출금", "계정/보안", "시스템", "기타"];
-const AFTER_CATEGORIES = ["Top 10", "결제", "출금", "오류", "기타"];
-
-const COLUMNS = ["No", "비중", "주요 키워드 요약", "해석된 문의 유형", "토픽 네이밍", "카테고리 개선"];
+import type { Locale } from "@/app/lib/i18n";
 
 type Row = { no: number; share: string; keywords: string; type: string; name: string; category: string };
 
-const ROWS: Row[] = [
-  {
-    no: 1,
-    share: "15.86%",
-    keywords: "결제, 환불, 실패, 라오스, 베트남, 페이, 이벤트, 코드, 태국, 네이버, 돼요, 시간, 점검, 취소, 일본",
-    type: "결제 실패 및 환불 관련 문의",
-    name: "결제오류/환불",
-    category: "결제",
+const COPY = {
+  ko: {
+    before: ["전체", "결제", "출금", "계정/보안", "시스템", "기타"],
+    after: ["Top 10", "결제", "출금", "오류", "기타"],
+    beforeLabel: "기존 카테고리",
+    afterLabel: "개선 카테고리",
+    columns: ["No", "비중", "주요 키워드 요약", "해석된 문의 유형", "토픽 네이밍", "카테고리 개선"],
+    topic: "토픽",
+    rows: [
+    {
+      no: 1,
+      share: "15.86%",
+      keywords: "결제, 환불, 실패, 라오스, 베트남, 페이, 이벤트, 코드, 태국, 네이버, 돼요, 시간, 점검, 취소, 일본",
+      type: "결제 실패 및 환불 관련 문의",
+      name: "결제오류/환불",
+      category: "결제",
+    },
+    {
+      no: 2,
+      share: "13.95%",
+      keywords: "기타, 가입, 계좌, 불가, 스캔, 인증, 자동, 등록, 번호, 신규, 토스, 탈퇴, 된다, 해외, 충전",
+      type: "회원가입, 인증, 계정 등록 관련 문의",
+      name: "가입/인증/계정",
+      category: "기타",
+    },
+    {
+      no: 3,
+      share: "20.49%",
+      keywords: "사용, 환급, 머니, 충전, 일본, 방법, 여부, 금액, 잔액, 카드, 해야, 은행, 설정, 대만, 토스",
+      type: "충전/환급 및 서비스 사용 방법 문의",
+      name: "충전/환급 사용법",
+      category: "결제, 출금",
+    },
+    {
+      no: 4,
+      share: "21.49%",
+      keywords: "기타, 환급, 오류, 머니, 한도, 내역, 베트남, 트래픽, 송금, 라오스, 거래, 방법, 세부, 이용, 서비스",
+      type: "환급 처리, 거래 오류, 한도/내역 관련 문의",
+      name: "환급/오류/내역",
+      category: "결제, 출금",
+    },
+    {
+      no: 5,
+      share: "9.11%",
+      keywords: "계좌, 수수료, 이벤트, 변경, 연결, 출금, 사용, 바트, 건가요, 환전, 통장, 외화, 오픈, 뱅킹, 원화",
+      type: "계좌 연결, 수수료, 환전·출금 관련 문의",
+      name: "수수료/계좌연결/출금",
+      category: "결제, 출금",
+    },
+    {
+      no: 6,
+      share: "5.3%",
+      keywords: "오류, 컬쳐, 내용, 답변, 캐시, 전환, 랜드, 필리핀, 화면, 시도, 에러, 등록, 다음, 가맹점, 발생",
+      type: "제휴 캐시 전환 오류 및 콘텐츠 이용 오류 문의",
+      name: "제휴캐시 오류",
+      category: "기타",
+    },
+    {
+      no: 7,
+      share: "13.8%",
+      keywords: "실패, 태국, 출금, 환율, 결제, 인식, 일본, 처리, 바트, 라오스, 현금, 버튼, 토스, 나왔, 진행",
+      type: "해외 출금 실패, 환율·결제 처리 관련 문의",
+      name: "해외출금/환율",
+      category: "결제, 출금",
+    },
+  ] as Row[],
   },
-  {
-    no: 2,
-    share: "13.95%",
-    keywords: "기타, 가입, 계좌, 불가, 스캔, 인증, 자동, 등록, 번호, 신규, 토스, 탈퇴, 된다, 해외, 충전",
-    type: "회원가입, 인증, 계정 등록 관련 문의",
-    name: "가입/인증/계정",
-    category: "기타",
+  en: {
+    before: ["All", "Payment", "Withdrawal", "Account/Security", "System", "Other"],
+    after: ["Top 10", "Payment", "Withdrawal", "Error", "Other"],
+    beforeLabel: "Previous categories",
+    afterLabel: "Improved categories",
+    columns: ["No", "Share", "Top keywords", "Inquiry type", "Topic name", "New category"],
+    topic: "Topic",
+    rows: [
+      {
+        no: 1,
+        share: "15.86%",
+        keywords: "payment, refund, failure, Laos, Vietnam, pay, event, code, Thailand, Naver, works, time, maintenance, cancel, Japan",
+        type: "Payment failures and refunds",
+        name: "Payment errors/Refunds",
+        category: "Payment",
+      },
+      {
+        no: 2,
+        share: "13.95%",
+        keywords: "other, sign-up, account, unavailable, scan, verification, auto, register, number, new, Toss, delete account, can, overseas, top-up",
+        type: "Sign-up, verification, and account registration",
+        name: "Sign-up/Verification/Account",
+        category: "Other",
+      },
+      {
+        no: 3,
+        share: "20.49%",
+        keywords: "use, cash-out, money, top-up, Japan, how, whether, amount, balance, card, must, bank, settings, Taiwan, Toss",
+        type: "Top-ups, cash-outs, and how to use the service",
+        name: "How to top up/cash out",
+        category: "Payment, Withdrawal",
+      },
+      {
+        no: 4,
+        share: "21.49%",
+        keywords: "other, cash-out, error, money, limit, history, Vietnam, traffic, transfer, Laos, transaction, how, details, use, service",
+        type: "Cash-out processing, transaction errors, limits and history",
+        name: "Cash-outs/Errors/History",
+        category: "Payment, Withdrawal",
+      },
+      {
+        no: 5,
+        share: "9.11%",
+        keywords: "account, fee, event, change, link, withdrawal, use, baht, is it, exchange, bankbook, foreign currency, open, banking, KRW",
+        type: "Account linking, fees, currency exchange and withdrawal",
+        name: "Fees/Account linking/Withdrawal",
+        category: "Payment, Withdrawal",
+      },
+      {
+        no: 6,
+        share: "5.3%",
+        keywords: "error, culture, content, answer, cash, convert, land, Philippines, screen, attempt, bug, register, next, merchant, occur",
+        type: "Partner cash conversion errors and content errors",
+        name: "Partner cash errors",
+        category: "Other",
+      },
+      {
+        no: 7,
+        share: "13.8%",
+        keywords: "failure, Thailand, withdrawal, exchange rate, payment, recognition, Japan, processing, baht, Laos, cash, button, Toss, came out, in progress",
+        type: "Overseas withdrawal failures, exchange rates and payment processing",
+        name: "Overseas withdrawal/Exchange rates",
+        category: "Payment, Withdrawal",
+      },
+    ] as Row[],
   },
-  {
-    no: 3,
-    share: "20.49%",
-    keywords: "사용, 환급, 머니, 충전, 일본, 방법, 여부, 금액, 잔액, 카드, 해야, 은행, 설정, 대만, 토스",
-    type: "충전/환급 및 서비스 사용 방법 문의",
-    name: "충전/환급 사용법",
-    category: "결제, 출금",
-  },
-  {
-    no: 4,
-    share: "21.49%",
-    keywords: "기타, 환급, 오류, 머니, 한도, 내역, 베트남, 트래픽, 송금, 라오스, 거래, 방법, 세부, 이용, 서비스",
-    type: "환급 처리, 거래 오류, 한도/내역 관련 문의",
-    name: "환급/오류/내역",
-    category: "결제, 출금",
-  },
-  {
-    no: 5,
-    share: "9.11%",
-    keywords: "계좌, 수수료, 이벤트, 변경, 연결, 출금, 사용, 바트, 건가요, 환전, 통장, 외화, 오픈, 뱅킹, 원화",
-    type: "계좌 연결, 수수료, 환전·출금 관련 문의",
-    name: "수수료/계좌연결/출금",
-    category: "결제, 출금",
-  },
-  {
-    no: 6,
-    share: "5.3%",
-    keywords: "오류, 컬쳐, 내용, 답변, 캐시, 전환, 랜드, 필리핀, 화면, 시도, 에러, 등록, 다음, 가맹점, 발생",
-    type: "제휴 캐시 전환 오류 및 콘텐츠 이용 오류 문의",
-    name: "제휴캐시 오류",
-    category: "기타",
-  },
-  {
-    no: 7,
-    share: "13.8%",
-    keywords: "실패, 태국, 출금, 환율, 결제, 인식, 일본, 처리, 바트, 라오스, 현금, 버튼, 토스, 나왔, 진행",
-    type: "해외 출금 실패, 환율·결제 처리 관련 문의",
-    name: "해외출금/환율",
-    category: "결제, 출금",
-  },
-];
+};
 
 // Bubble geometry measured from the original intertopic distance map (1000 x 1145 space).
 const BUBBLES = [
@@ -110,7 +182,7 @@ function CategoryArrow() {
   );
 }
 
-function TopicMap({ active, onHover }: { active: number | null; onHover: (no: number | null) => void }) {
+function TopicMap({ active, onHover, topic }: { active: number | null; onHover: (no: number | null) => void; topic: string }) {
   return (
     <svg className="tm-map-svg" viewBox="0 40 1000 1105" role="img" aria-label="intertopic distance map">
       {BUBBLES.map((b) => {
@@ -120,7 +192,7 @@ function TopicMap({ active, onHover }: { active: number | null; onHover: (no: nu
             key={b.no}
             className={`tm-bubble${state}`}
             tabIndex={0}
-            aria-label={`토픽 ${b.no}`}
+            aria-label={`${topic} ${b.no}`}
             onMouseEnter={() => onHover(b.no)}
             onMouseLeave={() => onHover(null)}
             onFocus={() => onHover(b.no)}
@@ -164,16 +236,17 @@ function TopicMap({ active, onHover }: { active: number | null; onHover: (no: nu
   );
 }
 
-export default function TopicModeling() {
+export default function TopicModeling({ locale = "ko" }: { locale?: Locale }) {
+  const t = COPY[locale];
   const [active, setActive] = useState<number | null>(null);
 
   return (
     <div className="tm">
       <div className="tm-flow">
         <div className="tm-group">
-          <span className="tm-group-label">기존 카테고리</span>
+          <span className="tm-group-label">{t.beforeLabel}</span>
           <div className="tm-chips">
-            {BEFORE_CATEGORIES.map((c) => (
+            {t.before.map((c) => (
               <span key={c} className="tm-chip">
                 {c}
               </span>
@@ -182,9 +255,9 @@ export default function TopicModeling() {
         </div>
         <CategoryArrow />
         <div className="tm-group tm-group-after">
-          <span className="tm-group-label">개선 카테고리</span>
+          <span className="tm-group-label">{t.afterLabel}</span>
           <div className="tm-chips">
-            {AFTER_CATEGORIES.map((c) => (
+            {t.after.map((c) => (
               <span key={c} className="tm-chip">
                 {c}
               </span>
@@ -197,7 +270,7 @@ export default function TopicModeling() {
         <table className="tm-table">
           <thead>
             <tr>
-              {COLUMNS.map((c) => (
+              {t.columns.map((c) => (
                 <th key={c} scope="col">
                   {c}
                 </th>
@@ -205,7 +278,7 @@ export default function TopicModeling() {
             </tr>
           </thead>
           <tbody>
-            {ROWS.map((r) => (
+            {t.rows.map((r) => (
               <tr
                 key={r.no}
                 className={active === r.no ? "is-active" : undefined}
@@ -228,7 +301,7 @@ export default function TopicModeling() {
       </div>
 
       <figure className="tm-map">
-        <TopicMap active={active} onHover={setActive} />
+        <TopicMap active={active} onHover={setActive} topic={t.topic} />
         <figcaption className="inquiry-wordcloud-caption">intertopic distance map</figcaption>
       </figure>
     </div>

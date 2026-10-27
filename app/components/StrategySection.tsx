@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 type Principle = { name: string; step: string; details: string[]; goal: string };
 
@@ -89,7 +91,10 @@ function FlowRow({ principle, index }: { principle: Principle; index: number }) 
   );
 }
 
-const TERMS = ["(1) 실패 상황의 명확성 강화", "(2) 사용자 불안 완화", "(3) 자발적 해결 가능성 확대"];
+const TERMS: Record<Locale, string[]> = {
+  ko: ["(1) 실패 상황의 명확성 강화", "(2) 사용자 불안 완화", "(3) 자발적 해결 가능성 확대"],
+  en: ["(1) clearer communication when things fail", "(2) less user anxiety", "(3) more room for users to solve problems themselves"],
+};
 
 export default function StrategySection({
   body,
@@ -99,7 +104,9 @@ export default function StrategySection({
   body: string;
   highlight: string;
   list: string[];
+  locale?: Locale;
 }) {
+  const locale = useLocale();
   const principles = parsePrinciples(list);
   const { ref, visible } = useReveal<HTMLSpanElement>(0.6);
 
@@ -110,7 +117,7 @@ export default function StrategySection({
   // Split the highlighted sentence around the three numbered terms so each can carry a hover label.
   const nodes: React.ReactNode[] = [];
   let rest = idx === -1 ? "" : highlight;
-  TERMS.forEach((term, i) => {
+  TERMS[locale].forEach((term, i) => {
     const at = rest.indexOf(term);
     if (at === -1) return;
     if (at > 0) nodes.push(rest.slice(0, at));

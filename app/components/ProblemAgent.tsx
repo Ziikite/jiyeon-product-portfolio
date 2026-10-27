@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import AgentTerminal from "@/app/components/AgentTerminal";
+import { useLocale } from "@/app/lib/LocaleContext";
 
-const PAIN = "평균 1~2개월의 시간";
+const PAINS = { ko: "평균 1~2개월의 시간", en: "1–2 months on average" };
 
 export default function ProblemAgent({ body }: { body: string }) {
+  const PAIN = PAINS[useLocale()];
   const markRef = useRef<HTMLSpanElement>(null);
   const [on, setOn] = useState(false);
 

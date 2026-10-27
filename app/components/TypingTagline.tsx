@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
-const TEXT = "정의되지 않은 문제를 사용자 리서치와 데이터로 구조화해 서비스 개선으로 연결하는 기획자";
+const TEXTS = {
+  ko: "정의되지 않은 문제를 사용자 리서치와 데이터로 구조화해 서비스 개선으로 연결하는 기획자",
+  en: "A service planner who structures ill-defined problems with user research and data, and turns them into better services",
+};
 
 export default function TypingTagline() {
+  const TEXT = TEXTS[useLocale()];
   const [count, setCount] = useState(0);
 
   useEffect(() => {

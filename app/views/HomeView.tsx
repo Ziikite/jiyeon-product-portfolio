@@ -1,12 +1,14 @@
 import Link from "next/link";
 import Header from "@/app/components/Header";
 import TypingTagline from "@/app/components/TypingTagline";
-import { profile, projects } from "@/app/lib/data";
+import { getContent } from "@/app/lib/content";
+import { localePath, ui, type Locale } from "@/app/lib/i18n";
 
-export default function Home() {
+export default function HomeView({ locale }: { locale: Locale }) {
+  const { profile, projects } = getContent(locale);
   return (
     <main>
-      <Header />
+      <Header locale={locale} />
 
       <section className="hero" id="top">
         <h1>{profile.name}</h1>
@@ -14,7 +16,7 @@ export default function Home() {
         <div className="hero-foot">
           <p>{profile.about}</p>
           <a className="pill-link" href="#work">
-            프로젝트 보기 ↓
+            {ui[locale].viewProjects}
           </a>
         </div>
       </section>
@@ -27,7 +29,7 @@ export default function Home() {
 
           <div className="gallery-grid">
             {projects.map((project) => (
-              <Link className="gallery-card" href={`/projects/${project.slug}`} key={project.slug}>
+              <Link className="gallery-card" href={localePath(locale, `/projects/${project.slug}`)} key={project.slug}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img className="gallery-image" src={project.image} alt="" />
                 <div className="gallery-caption">

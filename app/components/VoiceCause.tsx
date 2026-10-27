@@ -2,17 +2,35 @@
 
 import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { balance } from "@/app/components/ShadowingVisual";
+import type { Locale } from "@/app/lib/i18n";
 
-const MARK = "정보의 의도와 맥락이 설계되지 않은 점이 신뢰도를 낮추는 것을 발견했습니다.";
 const YELLOW = "#FFE300";
 
 // Rows of the interview figure: VoC -> problem -> insight.
-const COLUMNS = ["VoC", "문제 상황", "인사이트"];
-const ROWS = [
-  { voc: "“했던 말 또 말하고... 그냥 무시해도 돼요.”", problem: "동일한 메시지가 상황과 무관하게 반복", insight: "상황 인식 없는 안내는 신뢰를 낮춤" },
-  { voc: "“무슨 말인지 몰라요. 그냥 화면 봐요.”", problem: "안내의 이유 및 설명 없이 반복", insight: "목적 없는 정보는 인지 부하 유발" },
-  { voc: "“다음에 뭐하란 말인지 모르겠어요.”", problem: "앞뒤 문맥 없이 단일 문장만 재생", insight: "사용자 플로우와 단절되면 소음으로 인식" },
-];
+const COPY = {
+  ko: {
+    mark: "정보의 의도와 맥락이 설계되지 않은 점이 신뢰도를 낮추는 것을 발견했습니다.",
+    columns: ["VoC", "문제 상황", "인사이트"],
+    rows: [
+      { voc: "“했던 말 또 말하고... 그냥 무시해도 돼요.”", problem: "동일한 메시지가 상황과 무관하게 반복", insight: "상황 인식 없는 안내는 신뢰를 낮춤" },
+      { voc: "“무슨 말인지 몰라요. 그냥 화면 봐요.”", problem: "안내의 이유 및 설명 없이 반복", insight: "목적 없는 정보는 인지 부하 유발" },
+      { voc: "“다음에 뭐하란 말인지 모르겠어요.”", problem: "앞뒤 문맥 없이 단일 문장만 재생", insight: "사용자 플로우와 단절되면 소음으로 인식" },
+    ],
+    title: "운전자 인터뷰",
+    photoAlt: "운전자 인터뷰 장면",
+  },
+  en: {
+    mark: "trust was dropping because no one had designed the intent and context behind each prompt.",
+    columns: ["VoC", "Problem", "Insight"],
+    rows: [
+      { voc: "“It keeps repeating itself... I can just ignore it.”", problem: "The same message repeats regardless of the situation", insight: "Prompts that ignore the situation erode trust" },
+      { voc: "“I don’t know what it’s saying. I just look at the screen.”", problem: "Prompts repeat with no reason or explanation", insight: "Information without a purpose adds cognitive load" },
+      { voc: "“I don’t know what it wants me to do next.”", problem: "A single sentence plays with no surrounding context", insight: "Cut off from the user’s flow, prompts become noise" },
+    ],
+    title: "Driver interviews",
+    photoAlt: "Driver interview session",
+  },
+};
 
 // Same arrow as the GLN / cloud cases (gradient line + chevron, nudging), in yellow and pointing right.
 function Arrow() {
@@ -46,7 +64,18 @@ function useWatch<T extends HTMLElement>(threshold: number, rootMargin = "0px 0p
   return [ref, on] as const;
 }
 
-export default function VoiceCause({ body, quotes, photo }: { body: string; quotes: string[]; photo: string }) {
+export default function VoiceCause({
+  body,
+  quotes,
+  photo,
+  locale = "ko",
+}: {
+  body: string;
+  quotes: string[];
+  photo: string;
+  locale?: Locale;
+}) {
+  const { mark: MARK, columns: COLUMNS, rows: ROWS, title, photoAlt } = COPY[locale];
   const [markRef, markOn] = useWatch<HTMLSpanElement>(0.9, "0px 0px -10% 0px");
   const [flowRef, flowOn] = useWatch<HTMLDivElement>(0.35);
   const [photoRef, photoOn] = useWatch<HTMLElement>(0.45);
@@ -68,7 +97,7 @@ export default function VoiceCause({ body, quotes, photo }: { body: string; quot
 
       <div ref={flowRef} className={`cz${flowOn ? " is-on" : ""}${active !== null ? " has-active" : ""}`}>
         <div className="cz-title">
-          운전자 인터뷰 <span>(n = 6)</span>
+          {title} <span>(n = 6)</span>
         </div>
         <div className="cz-head" aria-hidden="true">
           {COLUMNS.map((c) => (
@@ -107,7 +136,7 @@ export default function VoiceCause({ body, quotes, photo }: { body: string; quot
       <figure ref={photoRef} className={`sh${photoOn ? " is-on" : ""}`}>
         <div className="sh-stage sh-stage-interview">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="sh-photo" src={photo} alt="운전자 인터뷰 장면" loading="lazy" decoding="async" />
+          <img className="sh-photo" src={photo} alt={photoAlt} loading="lazy" decoding="async" />
           <div className="sh-bubbles">
             {quotes.map((q, i) => {
               const lines = balance(q);

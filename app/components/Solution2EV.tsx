@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
-const ITEMS = [
+const ITEMS_KO = [
   {
     image: "/projects/detail/gm-ev-charging-solution-2.svg",
     w: 2028,
@@ -26,6 +27,26 @@ const ITEMS = [
   },
 ];
 
+const ITEMS_EN: typeof ITEMS_KO = [
+  {
+    ...ITEMS_KO[0],
+    title: "Choose equipment to suit the content",
+    bullets: ["If the car's display isn't suited to watching, rent an extra screen that mounts inside the car"],
+  },
+  {
+    ...ITEMS_KO[1],
+    title: "OTT recommendations sized to the charging time",
+    bullets: ["Snackable content that's easy to enjoy despite accumulated fatigue", "Content chosen by runtime to match the charging time"],
+  },
+  {
+    ...ITEMS_KO[2],
+    title: "Book for your arrival time and prepay, so the service is ready the moment you arrive",
+    bullets: ["Set a food pickup time to match arrival", "Pay with GM Points to make paying for services feel lighter"],
+  },
+];
+
+const ITEMS = { ko: ITEMS_KO, en: ITEMS_EN };
+
 function useInView<T extends HTMLElement>(threshold: number) {
   const ref = useRef<T | null>(null);
   const [on, setOn] = useState(false);
@@ -39,7 +60,7 @@ function useInView<T extends HTMLElement>(threshold: number) {
   return [ref, on] as const;
 }
 
-function Item({ item, index }: { item: (typeof ITEMS)[number]; index: number }) {
+function Item({ item, index }: { item: (typeof ITEMS_KO)[number]; index: number }) {
   const [ref, on] = useInView<HTMLDivElement>(0.3);
   return (
     <div ref={ref} className={`s2-item${on ? " is-on" : ""}`}>
@@ -62,10 +83,10 @@ function Item({ item, index }: { item: (typeof ITEMS)[number]; index: number }) 
   );
 }
 
-export default function Solution2EV() {
+export default function Solution2EV({ locale = "ko" }: { locale?: Locale }) {
   return (
     <div className="s2-items">
-      {ITEMS.map((item, i) => (
+      {ITEMS[locale].map((item, i) => (
         <Item key={item.title} item={item} index={i} />
       ))}
     </div>

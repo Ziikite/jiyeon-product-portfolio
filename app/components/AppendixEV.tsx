@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
 const IMAGES = [
-  { src: "/projects/detail/gm-ev-charging-appendix-1.svg", w: 1920, h: 891, caption: "사용자 여정 지도" },
-  { src: "/projects/detail/gm-ev-charging-appendix-2.svg", w: 1571, h: 757, caption: "Information Architecture" },
+  { src: "/projects/detail/gm-ev-charging-appendix-1.svg", w: 1920, h: 891, caption: { ko: "사용자 여정 지도", en: "User journey map" } },
+  { src: "/projects/detail/gm-ev-charging-appendix-2.svg", w: 1571, h: 757, caption: { ko: "Information Architecture", en: "Information Architecture" } },
 ];
 
-function Figure({ img }: { img: (typeof IMAGES)[number] }) {
+function Figure({ img, locale }: { img: (typeof IMAGES)[number]; locale: Locale }) {
+  const caption = img.caption[locale];
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -22,18 +24,18 @@ function Figure({ img }: { img: (typeof IMAGES)[number] }) {
     <div ref={ref} className={`s2-item${on ? " is-on" : ""}`}>
       <div className="s2-image-wrap" style={{ aspectRatio: `${img.w} / ${img.h}` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="s2-image" src={img.src} alt={img.caption} loading="lazy" decoding="async" />
+        <img className="s2-image" src={img.src} alt={caption} loading="lazy" decoding="async" />
       </div>
-      <p className="sh-caption">{img.caption}</p>
+      <p className="sh-caption">{caption}</p>
     </div>
   );
 }
 
-export default function AppendixEV() {
+export default function AppendixEV({ locale = "ko" }: { locale?: Locale }) {
   return (
     <div className="s2-items">
       {IMAGES.map((img) => (
-        <Figure key={img.src} img={img} />
+        <Figure key={img.src} img={img} locale={locale} />
       ))}
     </div>
   );

@@ -1,31 +1,54 @@
 import { findImage } from "@/app/lib/findImage";
+import type { Locale } from "@/app/lib/i18n";
 
 // Drop a screenshot named "<base>.<ext>" into public/projects/detail/ and it replaces the placeholder automatically.
 export const PROBLEM_IMAGE_SIZE = { w: 1200, h: 675 }; // 16:9
 
 type Page = { title: string; imageBase: string; flow: string[]; bounce: string; conversion: string; problem?: boolean };
 
-const PAGES: Page[] = [
-  { title: "소개 페이지", imageBase: "clas-problem-intro", flow: ["상품 정보 확인"], bounce: "86%", conversion: "1.1%", problem: true },
-  {
-    title: "구매 페이지",
-    imageBase: "clas-problem-purchase",
-    flow: ["상품 옵션 선택", "결제(신청)", "계정 관리", "추가 구매"],
-    bounce: "78%",
-    conversion: "1.3%",
+const COPY: Record<Locale, { pages: Page[]; rows: string[]; screen: string; cut: string }> = {
+  ko: {
+    pages: [
+      { title: "소개 페이지", imageBase: "clas-problem-intro", flow: ["상품 정보 확인"], bounce: "86%", conversion: "1.1%", problem: true },
+      {
+        title: "구매 페이지",
+        imageBase: "clas-problem-purchase",
+        flow: ["상품 옵션 선택", "결제(신청)", "계정 관리", "추가 구매"],
+        bounce: "78%",
+        conversion: "1.3%",
+      },
+      { title: "사용 페이지", imageBase: "clas-problem-use", flow: ["상품 이용"], bounce: "-", conversion: "-" },
+    ],
+    rows: ["플로우", "이탈률", "전환율"],
+    screen: "화면",
+    cut: " 소개 페이지(",
   },
-  { title: "사용 페이지", imageBase: "clas-problem-use", flow: ["상품 이용"], bounce: "-", conversion: "-" },
-];
-
-const ROWS = ["플로우", "이탈률", "전환율"];
+  en: {
+    pages: [
+      { title: "Intro page", imageBase: "clas-problem-intro", flow: ["Check product info"], bounce: "86%", conversion: "1.1%", problem: true },
+      {
+        title: "Purchase page",
+        imageBase: "clas-problem-purchase",
+        flow: ["Choose options", "Pay (apply)", "Manage account", "Buy more"],
+        bounce: "78%",
+        conversion: "1.3%",
+      },
+      { title: "Usage page", imageBase: "clas-problem-use", flow: ["Use the product"], bounce: "-", conversion: "-" },
+    ],
+    rows: ["Flow", "Bounce rate", "Conversion"],
+    screen: "screen",
+    cut: " Intro page (",
+  },
+};
 
 function Value({ text }: { text: string }) {
   return <span className={text === "-" ? "pt-value is-empty" : "pt-value"}>{text}</span>;
 }
 
-export default function ProblemTable({ body }: { body: string }) {
+export default function ProblemTable({ body, locale = "ko" }: { body: string; locale?: Locale }) {
+  const { pages: PAGES, rows: ROWS, screen, cut: marker } = COPY[locale];
   // The flow / rate details are in the table now, so only the opening sentence stays as text.
-  const cut = body.indexOf(" 소개 페이지(");
+  const cut = body.indexOf(marker);
   const intro = cut === -1 ? body : body.slice(0, cut);
 
   return (
@@ -49,10 +72,10 @@ export default function ProblemTable({ body }: { body: string }) {
               <div key={p.title} className={`pt-cell pt-shot${p.problem ? " is-problem is-first" : ""}`}>
                 {src ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img className="pt-img" src={src} alt={`${p.title} 화면`} />
+                  <img className="pt-img" src={src} alt={`${p.title} ${screen}`} />
                 ) : (
                   <div className="pt-placeholder">
-                    <span className="pt-placeholder-name">{p.title} 화면</span>
+                    <span className="pt-placeholder-name">{p.title} {screen}</span>
                     <span className="pt-placeholder-size">
                       {PROBLEM_IMAGE_SIZE.w} × {PROBLEM_IMAGE_SIZE.h}
                     </span>

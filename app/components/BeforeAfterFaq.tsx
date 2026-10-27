@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
 type Bubble = { q?: string; a: string };
 type Pair = {
@@ -13,6 +14,48 @@ type Pair = {
 };
 type Model = { intro: string; principle: string; pairs: Pair[] };
 type Kind = "clear" | "approachable" | "focus";
+
+// Phrases each parser anchors on; they must appear verbatim in that locale's section body.
+type Anchors = {
+  clearStart: string;
+  priceEnd: string;
+  limitEmphasis: string;
+  limitRed: string;
+  receiptEmphasis: string;
+  contactEmphasis: string;
+  contactRed: string;
+  omitted: string;
+  receiptAlt: string;
+  receiptPath: string;
+};
+
+const ANCHORS: Record<Locale, Anchors> = {
+  ko: {
+    clearStart: "단, ",
+    priceEnd: "부과돼요.",
+    limitEmphasis: "* 현지 환율에 따라 한도는 변경될 수 있어요",
+    limitRed: "현지 파트너사의 환율에 따라",
+    receiptEmphasis: "국세청 소득공제 대상 결제 유형이 아니기 때문이에요. 대신, 결제 영수증은 앱에서 직접 확인할 수 있어요.",
+    contactEmphasis: "* 카카오톡 : https://pf.kakao.com/_dxoixbxj * 이메일 : cs@glninternational.com",
+    contactRed: "카카오톡/이메일 문의를 통해 GLN에 문의해주시면 저희가 도와드릴게요.",
+    omitted: "(중략)",
+    receiptAlt: "대신,",
+    receiptPath: "영수증 확인 경로",
+  },
+  en: {
+    clearStart: "Note that ",
+    priceEnd: "as a fee.",
+    limitEmphasis: "* Limits may change with local exchange rates",
+    limitRed: "depending on the exchange rate of the local partner",
+    receiptEmphasis:
+      "That's because they aren't a payment type eligible for the National Tax Service income deduction. Instead, you can check your payment receipt right in the app.",
+    contactEmphasis: "* KakaoTalk : https://pf.kakao.com/_dxoixbxj * Email : cs@glninternational.com",
+    contactRed: "contact GLN via KakaoTalk/email and we'll help you.",
+    omitted: "(…)",
+    receiptAlt: "Instead,",
+    receiptPath: "How to find your receipt",
+  },
+};
 
 const BODY_RE = /^([\s\S]*?) As-is : "([\s\S]*?)" To-be : "([\s\S]*?)" ([\s\S]*)$/;
 
@@ -34,12 +77,12 @@ function splitChat(raw: string): Bubble | null {
 }
 
 // Solution 1 — one Q/A pair, highlight on the "단, ..." sentence
-function parseClear(body: string): Model | null {
+function parseClear(body: string, c: Anchors): Model | null {
   const s = splitBody(body);
   if (!s) return null;
   const before = splitChat(s.asIs);
   const after = splitChat(s.toBe);
-  const start = after?.a.indexOf("단, ") ?? -1;
+  const start = after?.a.indexOf(c.clearStart) ?? -1;
   if (!before || !after || start === -1) return null;
   return {
     intro: s.intro,
@@ -49,14 +92,15 @@ function parseClear(body: string): Model | null {
 }
 
 // Solution 2 — two answer-only pairs; the three notes are split across them in source order
-function parseApproachable(body: string): Model | null {
+function parseApproachable(body: string, c: Anchors): Model | null {
   const s = splitBody(body);
   if (!s) return null;
   const beforeA = s.asIs.split(" / ").filter((t) => t.startsWith("A. "));
   const afterA = s.toBe.split(" / ");
-  const priceEnd = afterA[0]?.indexOf("부과돼요.") ?? -1;
-  const limitEmphasis = "* 현지 환율에 따라 한도는 변경될 수 있어요";
-  const redPhrase = "현지 파트너사의 환율에 따라";
+  const priceEnd = afterA[0]?.indexOf(c.priceEnd) ?? -1;
+  const limitEmphasis = c.limitEmphasis;
+  const redPhrase = c.limitRed;
+  const format = (t: string) => breakLines(t, c);
   if (
     beforeA.length !== 2 ||
     afterA.length !== 2 ||
@@ -74,9 +118,9 @@ function parseApproachable(body: string): Model | null {
       {
         before: { a: beforeA[0] },
         after: { a: afterA[0] },
-        emphasis: afterA[0].slice(0, priceEnd + "부과돼요.".length),
+        emphasis: afterA[0].slice(0, priceEnd + c.priceEnd.length),
         notes: [s.notes[0], s.notes[2]],
-        format: breakLines,
+        format,
       },
       {
         before: { a: beforeA[1] },
@@ -84,22 +128,22 @@ function parseApproachable(body: string): Model | null {
         emphasis: limitEmphasis,
         notes: [s.notes[1]],
         redPhrase,
-        format: breakLines,
+        format,
       },
     ],
   };
 }
 
 // Solution 3 — two answer-only pairs; one note per pair
-function parseFocus(body: string): Model | null {
+function parseFocus(body: string, c: Anchors): Model | null {
   const s = splitBody(body);
   if (!s) return null;
   const answers = (t: string) => t.split(" / ").filter((x) => x.startsWith("A. "));
   const beforeA = answers(s.asIs);
   const afterA = answers(s.toBe);
-  const receiptEmphasis = "국세청 소득공제 대상 결제 유형이 아니기 때문이에요. 대신, 결제 영수증은 앱에서 직접 확인할 수 있어요.";
-  const contactEmphasis = "* 카카오톡 : https://pf.kakao.com/_dxoixbxj * 이메일 : cs@glninternational.com";
-  const redPhrase = "카카오톡/이메일 문의를 통해 GLN에 문의해주시면 저희가 도와드릴게요.";
+  const receiptEmphasis = c.receiptEmphasis;
+  const contactEmphasis = c.contactEmphasis;
+  const redPhrase = c.contactRed;
   if (
     beforeA.length !== 2 ||
     afterA.length !== 2 ||
@@ -119,7 +163,7 @@ function parseFocus(body: string): Model | null {
         after: { a: afterA[0] },
         emphasis: receiptEmphasis,
         notes: [s.notes[0]],
-        format: receiptBreaks,
+        format: (t) => receiptBreaks(t, c),
       },
       {
         before: { a: beforeA[1] },
@@ -127,27 +171,30 @@ function parseFocus(body: string): Model | null {
         emphasis: contactEmphasis,
         notes: [s.notes[1]],
         redPhrase,
-        format: breakLines,
+        format: (t) => breakLines(t, c),
       },
     ],
   };
 }
 
 // Line breaks are kept exactly where the sentences/bullets end.
-function breakLines(text: string) {
+const escapeRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+function breakLines(text: string, c: Anchors) {
   return text
-    .replace(/\s*\(중략\)\s*/g, "\n(중략)\n")
+    .split(new RegExp(`\\s*${escapeRe(c.omitted)}\\s*`))
+    .join(`\n${c.omitted}\n`)
     .replace(/\.\s+/g, ".\n")
     .replace(/\s+\* /g, "\n* ")
     .trim();
 }
 
 // Receipt answer: blank lines between the reason, the alternative and the path; the path's ":" starts its own line.
-function receiptBreaks(text: string) {
-  return breakLines(text)
-    .replace(/\.\n(대신,)/, ".\n\n$1")
-    .replace(/\.\n(영수증 확인 경로)/, ".\n\n$1")
-    .replace(/(영수증 확인 경로) : /, "$1\n: ");
+function receiptBreaks(text: string, c: Anchors) {
+  return breakLines(text, c)
+    .replace(`.\n${c.receiptAlt}`, `.\n\n${c.receiptAlt}`)
+    .replace(`.\n${c.receiptPath}`, `.\n\n${c.receiptPath}`)
+    .replace(`${c.receiptPath} : `, `${c.receiptPath}\n: `);
 }
 
 // "Q. text" -> bold marker + text (the visible characters stay identical to the source)
@@ -350,8 +397,9 @@ const identity = (t: string) => t;
 const PHASE_AFTER = 0.28;
 const PHASE_NOTE = 0.62;
 
-export default function BeforeAfterFaq({ body, kind }: { body: string; kind: Kind }) {
-  const model = kind === "clear" ? parseClear(body) : kind === "approachable" ? parseApproachable(body) : parseFocus(body);
+export default function BeforeAfterFaq({ body, kind, locale = "ko" }: { body: string; kind: Kind; locale?: Locale }) {
+  const c = ANCHORS[locale];
+  const model = kind === "clear" ? parseClear(body, c) : kind === "approachable" ? parseApproachable(body, c) : parseFocus(body, c);
   const count = model?.pairs.length ?? 1;
   const trackRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);

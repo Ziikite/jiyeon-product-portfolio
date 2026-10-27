@@ -1,12 +1,42 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 // Before: Pre-Sales -> Sales -> Post-Sales. After: Pre-Sales -> Console.
 // One diagram morphs between the two: rows that go away collapse, rows that arrive expand, the Sales header becomes Console
 // and the Post-Sales block folds into it. It auto-plays while on screen; the toggle lets you jump to either state.
 const HOLD_BEFORE = 2600;
 const HOLD_AFTER = 3200;
+
+const COPY = {
+  ko: {
+    info: "상품 정보 확인",
+    inquiry: "문의",
+    added: "추가",
+    moved: "이동",
+    options: "상품 옵션 선택",
+    pay: "결제 (신청)",
+    manage: "결제/계정/문의관리",
+    use: "상품 이용",
+    more: "추가 구매",
+    compare: "플로우 비교",
+    unit: "단계",
+  },
+  en: {
+    info: "Check product info",
+    inquiry: "Inquiry",
+    added: "New",
+    moved: "Moved",
+    options: "Choose options",
+    pay: "Pay (apply)",
+    manage: "Billing / account / inquiries",
+    use: "Use the product",
+    more: "Buy more",
+    compare: "Compare flows",
+    unit: "steps",
+  },
+};
 
 function Arrow() {
   return (
@@ -30,6 +60,7 @@ function Row({ children, kind, badge }: { children: React.ReactNode; kind?: "add
 }
 
 export default function FlowMorph() {
+  const t = COPY[useLocale()];
   const ref = useRef<HTMLDivElement>(null);
   const [after, setAfter] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -61,9 +92,9 @@ export default function FlowMorph() {
           <div className="fm-head">
             <span>Pre-Sales</span>
           </div>
-          <Row>상품 정보 확인</Row>
-          <Row kind="added" badge="추가">
-            문의
+          <Row>{t.info}</Row>
+          <Row kind="added" badge={t.added}>
+            {t.inquiry}
           </Row>
         </div>
 
@@ -76,13 +107,13 @@ export default function FlowMorph() {
             <span className="fm-head-a">Sales</span>
             <span className="fm-head-b">Console</span>
           </div>
-          <Row>상품 옵션 선택</Row>
-          <Row>결제 (신청)</Row>
-          <Row kind="removed">결제/계정/문의관리</Row>
-          <Row kind="added" badge="이동">
-            상품 이용
+          <Row>{t.options}</Row>
+          <Row>{t.pay}</Row>
+          <Row kind="removed">{t.manage}</Row>
+          <Row kind="added" badge={t.moved}>
+            {t.use}
           </Row>
-          <Row>추가 구매</Row>
+          <Row>{t.more}</Row>
         </div>
 
         <div className="fm-fold">
@@ -94,14 +125,14 @@ export default function FlowMorph() {
               <div className="fm-head">
                 <span>Post-Sales</span>
               </div>
-              <div className="fm-cell fm-cell-solo">상품 이용</div>
+              <div className="fm-cell fm-cell-solo">{t.use}</div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="fm-side">
-        <div className="fm-toggle" role="group" aria-label="플로우 비교">
+        <div className="fm-toggle" role="group" aria-label={t.compare}>
           <button type="button" className={!after ? "is-on" : ""} aria-pressed={!after} onClick={() => choose(false)}>
             Before
           </button>
@@ -114,7 +145,7 @@ export default function FlowMorph() {
             <b className="fm-count-a">3</b>
             <b className="fm-count-b">2</b>
           </span>
-          <span className="fm-count-unit">단계</span>
+          <span className="fm-count-unit">{t.unit}</span>
         </div>
       </div>
     </div>

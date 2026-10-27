@@ -1,17 +1,20 @@
 import Link from "next/link";
-import { profile } from "@/app/lib/data";
+import { getContent } from "@/app/lib/content";
+import { localePath, ui, type Locale } from "@/app/lib/i18n";
 
-export default function Header() {
+export default function Header({ locale }: { locale: Locale }) {
+  const { profile } = getContent(locale);
+  const t = ui[locale];
   return (
     <header className="site-header">
       <div className="wrap">
-        <Link className="wordmark" href="/" aria-label="홈으로">
+        <Link className="wordmark" href={localePath(locale, "/")} aria-label={t.home}>
           {profile.name}
           <span>{profile.nameKo}</span>
         </Link>
-        <nav className="nav-links" aria-label="주요 메뉴">
-          <Link href="/#work">Work</Link>
-          <Link href="/about">About</Link>
+        <nav className="nav-links" aria-label={t.mainNav}>
+          <Link href={localePath(locale, "/#work")}>Work</Link>
+          <Link href={localePath(locale, "/about")}>About</Link>
           <a href={profile.resumeUrl} target="_blank" rel="noopener noreferrer">
             Resume
           </a>

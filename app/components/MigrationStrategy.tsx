@@ -1,13 +1,21 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 // Rows are taken from the reference figure: Pain Point -> Insight -> Design Decision.
-const ROWS = [
-  { pain: "3-4개월 이상 소요되는 시스템 진단", insight: "수작업으로 복잡한 환경 파악", decision: "설문 기반 자동 진단 도입" },
-  { pain: "어려운 마이그레이션 현황 모니터링", insight: "산재된 다양한 툴과 정보", decision: "하나의 화면에서 통합 대시보드 설계" },
-  { pain: "복잡한 레거시 시스템과 난해한 용어", insight: "비전문가 대상 서비스 수요 증가", decision: "기술 용어 최소화 및 시각화" },
-];
+const ROWS = {
+  ko: [
+    { pain: "3-4개월 이상 소요되는 시스템 진단", insight: "수작업으로 복잡한 환경 파악", decision: "설문 기반 자동 진단 도입" },
+    { pain: "어려운 마이그레이션 현황 모니터링", insight: "산재된 다양한 툴과 정보", decision: "하나의 화면에서 통합 대시보드 설계" },
+    { pain: "복잡한 레거시 시스템과 난해한 용어", insight: "비전문가 대상 서비스 수요 증가", decision: "기술 용어 최소화 및 시각화" },
+  ],
+  en: [
+    { pain: "System assessments that take 3–4+ months", insight: "Complex environments mapped by hand", decision: "Survey-based automated assessment" },
+    { pain: "Migration progress that's hard to monitor", insight: "Scattered tools and information", decision: "One integrated dashboard on a single screen" },
+    { pain: "Complex legacy systems and obscure jargon", insight: "Growing demand from non-experts", decision: "Minimal jargon, more visuals" },
+  ],
+};
 const COLUMNS = ["Pain Point", "Insight", "Design Decision"];
 
 // Same arrow as the GLN FAQ case (gradient line + chevron, nudging), drawn in this project's blue and pointing right.
@@ -36,6 +44,7 @@ function Arrow() {
 }
 
 export default function MigrationStrategy({ body }: { body: string }) {
+  const rows = ROWS[useLocale()];
   const calloutRef = useRef<HTMLSpanElement>(null);
   const flowRef = useRef<HTMLDivElement>(null);
   const [calloutOn, setCalloutOn] = useState(false);
@@ -77,7 +86,7 @@ export default function MigrationStrategy({ body }: { body: string }) {
             <span key={c}>{c}</span>
           ))}
         </div>
-        {ROWS.map((row, i) => (
+        {rows.map((row, i) => (
           <div
             key={row.pain}
             className={`ms-row${active === i ? " is-active" : ""}`}

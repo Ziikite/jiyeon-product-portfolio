@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 // A console that never stops: agent-install log lines are typed one after another (server after server)
 // to show how much manual, code-driven work the competitors' environment analysis takes.
@@ -8,6 +9,11 @@ type Kind = "banner" | "hash" | "rule" | "bar" | "log" | "blank";
 type Line = { text: string; kind: Kind };
 
 const MAX_LINES = 40;
+
+const LABEL = {
+  ko: "에이전트 설치 로그가 끊임없이 입력되는 콘솔 화면",
+  en: "A console endlessly printing agent installation logs",
+};
 
 function block(n: number): Line[] {
   const server = `Server-T${n}.mydomain.local`;
@@ -52,6 +58,7 @@ const SPEED: Record<Kind, [number, number]> = {
 };
 
 export default function AgentTerminal() {
+  const locale = useLocale();
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   const [lines, setLines] = useState<Line[]>([]);
@@ -108,7 +115,7 @@ export default function AgentTerminal() {
   const shown = reduced ? block(1) : lines;
 
   return (
-    <div ref={ref} className="at" role="img" aria-label="에이전트 설치 로그가 끊임없이 입력되는 콘솔 화면">
+    <div ref={ref} className="at" role="img" aria-label={LABEL[locale]}>
       <div className="at-screen" aria-hidden="true">
         {shown.map((l, i) => (
           <div key={i} className={`at-line at-${l.kind}`}>

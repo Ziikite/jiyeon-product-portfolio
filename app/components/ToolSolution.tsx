@@ -1,7 +1,23 @@
 import AnnotatedScreen from "@/app/components/AnnotatedScreen";
+import type { Locale } from "@/app/lib/i18n";
+
+const ALT = {
+  ko: "마이그레이션 분석 결과 화면 (상세 비교, 리스크 분석 결과, 검토 의견)",
+  en: "Migration analysis results screen (detailed comparison, risk analysis, review notes)",
+};
 
 // Solution 2: the analysis-result screen (1194 x 834): 수정 필요 스펙 + 상세 비교 (one card) + 리스크 분석/검토 의견 cards. Leaders run down the right margin.
-export default function ToolSolution({ body, image, labels }: { body: string; image?: string; labels: string[] }) {
+export default function ToolSolution({
+  body,
+  image,
+  labels,
+  locale = "ko",
+}: {
+  body: string;
+  image?: string;
+  labels: string[];
+  locale?: Locale;
+}) {
   const [tableLabel, analysisLabel] = labels;
   return (
     <>
@@ -9,7 +25,7 @@ export default function ToolSolution({ body, image, labels }: { body: string; im
       {image && (
         <AnnotatedScreen
           image={image}
-          alt="마이그레이션 분석 결과 화면 (상세 비교, 리스크 분석 결과, 검토 의견)"
+          alt={ALT[locale]}
           width={1194}
           height={834}
           topRoom={54}

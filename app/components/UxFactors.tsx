@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
 // "시스템 품질 관점 — 안전감 : 핵심 정보만 제공하여 사용자의 혼선 감소" -> { view, title, desc }
 function parse(item: string) {
@@ -9,7 +10,7 @@ function parse(item: string) {
   return { view: view.trim(), title: title.trim(), desc: desc.join(" : ").trim() };
 }
 
-export default function UxFactors({ body, list }: { body: string; list: string[] }) {
+export default function UxFactors({ body, list }: { body: string; list: string[]; locale?: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   const [active, setActive] = useState<number | null>(null);

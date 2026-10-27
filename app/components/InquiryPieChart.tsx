@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
 type Slice = {
   label: string;
@@ -9,14 +10,29 @@ type Slice = {
   exploded?: boolean;
 };
 
-const DATA: Slice[] = [
-  { label: "기타", value: 44.7, color: "#7000FC", exploded: true },
-  { label: "오류/장애", value: 18.4, color: "#c7bdea" },
-  { label: "결제/납부", value: 15.4, color: "#d6cef0" },
-  { label: "회원/계정", value: 6.3, color: "#e3ddf5" },
-  { label: "수수료", value: 4.8, color: "#ece8fa" },
-  { label: "그 외", value: 10.4, color: "#f4f1fc" },
-];
+const DATA: Record<Locale, Slice[]> = {
+  ko: [
+    { label: "기타", value: 44.7, color: "#7000FC", exploded: true },
+    { label: "오류/장애", value: 18.4, color: "#c7bdea" },
+    { label: "결제/납부", value: 15.4, color: "#d6cef0" },
+    { label: "회원/계정", value: 6.3, color: "#e3ddf5" },
+    { label: "수수료", value: 4.8, color: "#ece8fa" },
+    { label: "그 외", value: 10.4, color: "#f4f1fc" },
+  ],
+  en: [
+    { label: "Other", value: 44.7, color: "#7000FC", exploded: true },
+    { label: "Errors/Outages", value: 18.4, color: "#c7bdea" },
+    { label: "Payments", value: 15.4, color: "#d6cef0" },
+    { label: "Membership/Account", value: 6.3, color: "#e3ddf5" },
+    { label: "Fees", value: 4.8, color: "#ece8fa" },
+    { label: "Everything else", value: 10.4, color: "#f4f1fc" },
+  ],
+};
+
+const COPY = {
+  ko: { caption: "기타 44.7%에 해당하는 문의 키워드" },
+  en: { caption: "Keywords from the 44.7% of inquiries filed as Other" },
+};
 
 const SIZE = 320;
 const CX = SIZE / 2;
@@ -37,11 +53,11 @@ function slicePath(r: number, startAngle: number, endAngle: number, cx: number, 
   return `M ${cx},${cy} L ${p1.x},${p1.y} A ${r},${r} 0 ${largeArc} 1 ${p2.x},${p2.y} Z`;
 }
 
-export default function InquiryPieChart() {
+export default function InquiryPieChart({ locale = "ko" }: { locale?: Locale }) {
   const [hover, setHover] = useState<{ label: string; value: number; x: number; y: number } | null>(null);
 
   let angle = 0;
-  const slices = DATA.map((d) => {
+  const slices = DATA[locale].map((d) => {
     const start = angle;
     const sweep = (d.value / 100) * 360;
     const end = start + sweep;
@@ -96,7 +112,7 @@ export default function InquiryPieChart() {
               fontWeight="600"
               fill="#fff"
             >
-              기타
+              {exploded.label}
             </text>
             <text
               x={explodedCenter.x + Math.cos(((exploded.mid - 90) * Math.PI) / 180) * (EXPLODE_R * 0.52)}
@@ -143,9 +159,9 @@ export default function InquiryPieChart() {
       <img
         className="inquiry-wordcloud-image"
         src="/projects/detail/gln-faq-wordcloud-1.png"
-        alt="기타 44.7%에 해당하는 문의 키워드"
+        alt={COPY[locale].caption}
       />
-      <p className="inquiry-wordcloud-caption">기타 44.7%에 해당하는 문의 키워드</p>
+      <p className="inquiry-wordcloud-caption">{COPY[locale].caption}</p>
     </div>
     </div>
   );

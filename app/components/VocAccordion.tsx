@@ -1,8 +1,15 @@
 "use client";
 
 import { useId, useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
-export default function VocAccordion() {
+const COPY = {
+  ko: { toggle: "실패 유형 VoC 보기", alt: "'실패' 유형 문의 키워드 워드클라우드" },
+  en: { toggle: "See failure-type VoC", alt: "Word cloud of keywords from 'failure' inquiries" },
+};
+
+export default function VocAccordion({ locale = "ko" }: { locale?: Locale }) {
+  const t = COPY[locale];
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
@@ -15,7 +22,7 @@ export default function VocAccordion() {
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
       >
-        실패 유형 VoC 보기
+        {t.toggle}
         <svg className="voc-chevron" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
           <path d="M3.5 6 L8 10.5 L12.5 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -26,7 +33,7 @@ export default function VocAccordion() {
           <img
             className="voc-image"
             src="/projects/detail/gln-faq-wordcloud-2.png"
-            alt="'실패' 유형 문의 키워드 워드클라우드"
+            alt={t.alt}
             loading="lazy"
           />
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
 type Tone = "neutral" | "outline" | "solid";
 
@@ -10,23 +11,42 @@ type CascadeCard = {
   tone: Tone;
 };
 
-const CARDS: CascadeCard[] = [
-  {
-    label: "Do",
-    text: "제공된 카테고리안에서\n\"내 상황이 어디에 해당하는지\" 판단 어려움",
-    tone: "neutral",
-  },
-  {
-    label: "Pain point",
-    text: "FAQ에서 찾기 어려운 문제 상황",
-    tone: "outline",
-  },
-  {
-    label: "Action",
-    text: "FAQ 탐색을 포기하고 CS로 직접 문의",
-    tone: "solid",
-  },
-];
+const CARDS: Record<Locale, CascadeCard[]> = {
+  ko: [
+    {
+      label: "Do",
+      text: "제공된 카테고리안에서\n\"내 상황이 어디에 해당하는지\" 판단 어려움",
+      tone: "neutral",
+    },
+    {
+      label: "Pain point",
+      text: "FAQ에서 찾기 어려운 문제 상황",
+      tone: "outline",
+    },
+    {
+      label: "Action",
+      text: "FAQ 탐색을 포기하고 CS로 직접 문의",
+      tone: "solid",
+    },
+  ],
+  en: [
+    {
+      label: "Do",
+      text: "Hard to tell \"which category my situation\nfalls under\" from the ones provided",
+      tone: "neutral",
+    },
+    {
+      label: "Pain point",
+      text: "Problems the FAQ makes hard to find",
+      tone: "outline",
+    },
+    {
+      label: "Action",
+      text: "Give up on the FAQ and contact CS directly",
+      tone: "solid",
+    },
+  ],
+};
 
 function ProblemCard({ card, index }: { card: CascadeCard; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -66,10 +86,10 @@ function ProblemCard({ card, index }: { card: CascadeCard; index: number }) {
   );
 }
 
-export default function ProblemCascade() {
+export default function ProblemCascade({ locale = "ko" }: { locale?: Locale }) {
   return (
     <div className="problem-cascade">
-      {CARDS.map((card, i) => (
+      {CARDS[locale].map((card, i) => (
         <ProblemCard key={card.label} card={card} index={i} />
       ))}
     </div>

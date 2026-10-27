@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
-const INTRO =
+const INTRO_KO =
   "충전 예약 및 엔터테인먼트 경험을 개선에 더하여 충전소도 팝업 스토어처럼 즐기다 갈 수 있는 공간이 될 수 있도록 기획한 최종 UX 디자인을 CEO 및 임원진 대상으로 발표하였습니다.";
 
-const BOXES = [
+const BOXES_KO = [
   {
     title: "기존 기획안에서 업그레이드하는 방법",
     text: "기존 기획안은 OTT 서비스를 중점적으로 구성되어 사용자의 실제 니즈를 충분히 반영하지 못하고 있었음을 인터뷰를 통해 발견하였습니다. 처음부터 기획안을 다시 쓰지 않고, 기존 기획안에서 발전할 수 있는 형태로 팀원들과 충전 전, 충전 후로 플로우를 나누어 업무 범위를 나누어 진행하여, 보다 디벨롭된 UX를 기획할 수 있었습니다.",
@@ -16,7 +17,27 @@ const BOXES = [
   },
 ];
 
-export default function OutcomeEV({ quotes }: { quotes: string[] }) {
+const COPY = {
+  ko: { intro: INTRO_KO, boxes: BOXES_KO, alt: "최종 UX 디자인 발표 화면" },
+  en: {
+    intro:
+      "We presented the final UX design to the CEO and executives: beyond better charging reservations and entertainment, it turned the charging station into a place to enjoy, like a pop-up store.",
+    boxes: [
+      {
+        title: "Upgrading the existing plan instead of starting over",
+        text: "Through the interviews we found that the original plan centered on OTT and didn't fully reflect users' real needs. Rather than starting over, we evolved the existing plan — splitting the flow into before and after charging and dividing the work among the team — which let us develop a more refined UX.",
+      },
+      {
+        title: "The key to interviewing on a new service is making it immersive",
+        text: "When we interviewed with a low-fi prototype, participants said it was hard to picture the service. To fix this, we made sketches, a 3D prototype, and a video for the interviews. As a result, participants said they could focus on the service and gave more immersive feedback, as if they had experienced it themselves.",
+      },
+    ],
+    alt: "Final UX design presentation",
+  },
+};
+
+export default function OutcomeEV({ quotes, locale = "ko" }: { quotes: string[]; locale?: Locale }) {
+  const t = COPY[locale];
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -29,13 +50,13 @@ export default function OutcomeEV({ quotes }: { quotes: string[] }) {
 
   return (
     <>
-      <p>{INTRO}</p>
+      <p>{t.intro}</p>
       <div className="s2-image-wrap" style={{ aspectRatio: "1139 / 541", marginTop: 22, maxWidth: 640 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="s2-image" src="/projects/detail/gm-ev-charging-outcome.svg" alt="최종 UX 디자인 발표 화면" loading="lazy" decoding="async" />
+        <img className="s2-image" src="/projects/detail/gm-ev-charging-outcome.svg" alt={t.alt} loading="lazy" decoding="async" />
       </div>
       <div className="oe-boxes">
-        {BOXES.map((b) => (
+        {t.boxes.map((b) => (
           <div key={b.title} className="oe-box">
             <h4>{b.title}</h4>
             <p>{b.text}</p>

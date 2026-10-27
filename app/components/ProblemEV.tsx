@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
 export const PROBLEM_IMAGE_SIZE = { w: 640, h: 480 }; // 4:3
 
@@ -11,13 +12,27 @@ const ITEM_RE = /^(.+?) — "([^"]+)" "([^"]+)"$/;
 
 // The three insight pills, verbatim fragments of the section body (already present there as one
 // run-on clause) — the reference layout just splits them one per pain point instead of one paragraph.
-const INSIGHTS = [
-  "사용자의 핵심 과업은 '충전 상태 확인'이며, 엔터테인먼트는 보조적인 역할",
-  "단순한 OTT 제공이 아니라, 충전 경험 전체를 고려한 UX 설계 필요",
-  "충전이 원활하게 진행된다는 확신이 없으면, 콘텐츠에 집중이 어려움",
-];
+// `introEnd` marks where that clause starts in the body, so the intro paragraph stops before it.
+const COPY = {
+  ko: {
+    introEnd: "사용자의 핵심 과업은",
+    insights: [
+      "사용자의 핵심 과업은 '충전 상태 확인'이며, 엔터테인먼트는 보조적인 역할",
+      "단순한 OTT 제공이 아니라, 충전 경험 전체를 고려한 UX 설계 필요",
+      "충전이 원활하게 진행된다는 확신이 없으면, 콘텐츠에 집중이 어려움",
+    ],
+  },
+  en: {
+    introEnd: "The core task for users is",
+    insights: [
+      "The core task for users is checking the charging status, with entertainment in a supporting role",
+      "Instead of simply offering OTT, we needed UX designed around the entire charging experience",
+      "Without confidence that charging is going smoothly, it's hard to focus on content",
+    ],
+  },
+};
 
-function parseList(list: string[]): Column[] | null {
+function parseList(list: string[], INSIGHTS: readonly string[]): Column[] | null {
   const columns: Column[] = [];
   for (let i = 0; i < list.length; i++) {
     const m = ITEM_RE.exec(list[i]);
@@ -76,11 +91,22 @@ function QuoteCycler({ quotes, running }: { quotes: [string, string]; running: b
   );
 }
 
-export default function ProblemEV({ body, list, images }: { body: string; list: string[]; images: Record<string, string | null> }) {
+export default function ProblemEV({
+  body,
+  list,
+  images,
+  locale = "ko",
+}: {
+  body: string;
+  list: string[];
+  images: Record<string, string | null>;
+  locale?: Locale;
+}) {
+  const t = COPY[locale];
   const [ref, on] = useInView<HTMLDivElement>(0.25);
-  const introEnd = body.indexOf("사용자의 핵심 과업은");
+  const introEnd = body.indexOf(t.introEnd);
   const intro = (introEnd === -1 ? body : body.slice(0, introEnd)).trim();
-  const columns = parseList(list);
+  const columns = parseList(list, t.insights);
 
   if (!columns) return <p>{body}</p>;
 

@@ -1,9 +1,41 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
+import type { Locale } from "@/app/lib/i18n";
 
-const MARK = "절반 이상의 사용자들은 음성 인식 기능을 사용하지 않고 있었습니다.";
-const CAUSE_TITLE = "기술적 원인으로 낮아진 AI 스피커 만족도";
+const COPY = {
+  ko: {
+    mark: "절반 이상의 사용자들은 음성 인식 기능을 사용하지 않고 있었습니다.",
+    causeTitle: "기술적 원인으로 낮아진 AI 스피커 만족도",
+    slices: { unsat: "불만족 ~ 보통", sat: "만족", none: "사용 경험 없음", bt: "블루투스 사용", phone: "스마트폰으로 사용", etc: "기타" } as Record<string, string>,
+    reasons: [
+      { text: "부자연스러운 대화", x: 16, y: 14, w: 108 },
+      { text: "인식 정확도", x: 20, y: 46, w: 80 },
+    ],
+    causes: ["음성 인식 정확도 부족", "부자연스러운 대화", "외부 소음 영향", "제한적인 기능"],
+    pctGap: "",
+    result: "음성인식 기술에 대한 낮은 신뢰도",
+    satTitle: "AI 스피커 만족도 및 불만족 이유",
+    satSource: "컨슈머인사이트, 2019~2020 AI스피커 이용현황-만족도 비교",
+    usageTitle: "차량 내 음성 인식 기능 활용 현황",
+  },
+  en: {
+    mark: "more than half of users weren’t using voice recognition at all.",
+    causeTitle: "AI speaker satisfaction lowered by technical issues",
+    slices: { unsat: "Neutral or worse", sat: "Satisfied", none: "Never used", bt: "Via Bluetooth", phone: "Via smartphone", etc: "Other" } as Record<string, string>,
+    reasons: [
+      { text: "Unnatural dialogue", x: 16, y: 14, w: 116 },
+      { text: "Recognition accuracy", x: 16, y: 46, w: 128 },
+    ],
+    causes: ["Poor recognition accuracy", "Unnatural conversation", "External noise", "Limited features"],
+    pctGap: " ",
+    result: "Low trust in voice recognition technology",
+    satTitle: "AI speaker satisfaction and reasons for dissatisfaction",
+    satSource: "Consumer Insight, AI speaker usage and satisfaction, 2019–2020",
+    usageTitle: "In-car voice recognition usage",
+  },
+};
 
 // ---- pies ---------------------------------------------------------------------------------------------------------
 // Yellow marks what the section is about; everything else stays gray. Labels appear as a toast on hover.
@@ -31,11 +63,6 @@ const USAGE: Slice[] = [
   { key: "bt", label: "블루투스 사용", value: 20, start: 50, fill: "#aab1b9", ink: "#111", lx: -0.35, ly: 0.49 },
   { key: "phone", label: "스마트폰으로 사용", value: 20, start: 70, fill: "#c8cbd0", ink: "#111", lx: -0.57, ly: -0.19 },
   { key: "etc", label: "기타", value: 10, start: 90, fill: "#dfe0e3", ink: "#111", lx: -0.22, ly: -0.67 },
-];
-// reasons for dissatisfaction, drawn as pills over the yellow slice (offsets from the centre)
-const REASONS = [
-  { text: "부자연스러운 대화", x: 16, y: 14, w: 108 },
-  { text: "인식 정확도", x: 20, y: 46, w: 80 },
 ];
 
 function useCount(target: number, run: boolean, delay: number, duration: number) {
@@ -157,20 +184,15 @@ function Pie({
 }
 
 // ---- cause -> distrust diagram --------------------------------------------------------------------------------------
-const CAUSES = [
-  { label: "음성 인식 정확도 부족", pct: 47 },
-  { label: "부자연스러운 대화", pct: 33 },
-  { label: "외부 소음 영향", pct: 32 },
-  { label: "제한적인 기능", pct: 31 },
-];
-const RESULT = "음성인식 기술에 대한 낮은 신뢰도";
+const CAUSE_PCTS = [47, 33, 32, 31];
 
-function CauseCard({ c, run, index }: { c: (typeof CAUSES)[number]; run: boolean; index: number }) {
+function CauseCard({ c, run, index, gap }: { c: { label: string; pct: number }; run: boolean; index: number; gap: string }) {
   const shown = useCount(c.pct, run, 350 + index * 150, 900);
   return (
     <div className="vb-card" style={{ ["--i" as string]: index, ["--pct" as string]: c.pct / 100 } as CSSProperties} tabIndex={0}>
       <span>
-        {c.label}({shown}%)
+        {c.label}
+        {gap}({shown}%)
       </span>
       <i className="vb-meter" aria-hidden="true" />
     </div>
@@ -194,7 +216,12 @@ function YellowArrow() {
   );
 }
 
-export default function VoiceBackground({ body }: { body: string }) {
+export default function VoiceBackground({ body }: { body: string; locale?: Locale }) {
+  const t = COPY[useLocale()];
+  const MARK = t.mark;
+  const CAUSE_TITLE = t.causeTitle;
+  const withLabels = (slices: Slice[]) => slices.map((s) => ({ ...s, label: t.slices[s.key] ?? s.label }));
+  const causes = t.causes.map((label, i) => ({ label, pct: CAUSE_PCTS[i] }));
   const markRef = useRef<HTMLSpanElement>(null);
   const chartsRef = useRef<HTMLDivElement>(null);
   const causeRef = useRef<HTMLDivElement>(null);
@@ -250,10 +277,10 @@ export default function VoiceBackground({ body }: { body: string }) {
       <div ref={chartsRef} className={`vb${chartsOn ? " is-on" : ""}`}>
         <div className="vb-grid">
           <figure className="vb-chart">
-            <div className="vb-title">AI 스피커 만족도 및 불만족 이유</div>
-            <Pie slices={SATISFACTION} cx={125} cy={125} run={chartsOn} hover={hover} setHover={setHover} showTip={showTip} hideTip={hideTip}>
+            <div className="vb-title">{t.satTitle}</div>
+            <Pie slices={withLabels(SATISFACTION)} cx={125} cy={125} run={chartsOn} hover={hover} setHover={setHover} showTip={showTip} hideTip={hideTip}>
               <g className="vb-reasons">
-                {REASONS.map((r, i) => (
+                {t.reasons.map((r, i) => (
                   <g key={r.text} className="vb-reason" style={{ ["--i" as string]: i } as CSSProperties} pointerEvents="none">
                     <rect x={125 + r.x} y={125 + r.y} width={r.w} height="24" rx="7" />
                     <text x={125 + r.x + r.w / 2} y={125 + r.y + 16.3} textAnchor="middle">
@@ -263,12 +290,12 @@ export default function VoiceBackground({ body }: { body: string }) {
                 ))}
               </g>
             </Pie>
-            <figcaption className="dc-source">컨슈머인사이트, 2019~2020 AI스피커 이용현황-만족도 비교</figcaption>
+            <figcaption className="dc-source">{t.satSource}</figcaption>
           </figure>
 
           <figure className="vb-chart">
-            <div className="vb-title">차량 내 음성 인식 기능 활용 현황</div>
-            <Pie slices={USAGE} cx={150} cy={125} run={chartsOn} hover={hover} setHover={setHover} showTip={showTip} hideTip={hideTip} />
+            <div className="vb-title">{t.usageTitle}</div>
+            <Pie slices={withLabels(USAGE)} cx={150} cy={125} run={chartsOn} hover={hover} setHover={setHover} showTip={showTip} hideTip={hideTip} />
             <figcaption className="dc-source">Voicebot, Voice Assistant Consumer Adoption Report 2018</figcaption>
           </figure>
         </div>
@@ -282,13 +309,13 @@ export default function VoiceBackground({ body }: { body: string }) {
       <div ref={causeRef} className={`vb-flow${causeOn ? " is-on" : ""}`}>
         <div className="vb-title">{CAUSE_TITLE}</div>
         <div className="vb-cards">
-          {CAUSES.map((c, i) => (
-            <CauseCard key={c.label} c={c} run={causeOn} index={i} />
+          {causes.map((c, i) => (
+            <CauseCard key={c.label} c={c} run={causeOn} index={i} gap={t.pctGap} />
           ))}
         </div>
         <YellowArrow />
         <div className="vb-result" tabIndex={0}>
-          <span>{RESULT}</span>
+          <span>{t.result}</span>
         </div>
       </div>
     </>

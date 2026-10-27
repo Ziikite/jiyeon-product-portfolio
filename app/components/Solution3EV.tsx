@@ -1,15 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { Locale } from "@/app/lib/i18n";
 
-const TITLE = "팝업 형태로 브랜드 프로모션이 가능한 충전소";
-const BULLETS = [
-  "휴식 공간으로, 충전 중 피로를 풀 수 있는 휴게 공간 제공",
-  "브랜드 팝업 존으로, 한국 GM 브랜드를 홍보할 수 있는 프로모션 공간 제공",
-  "충전 중 휴식 외에도 새로운 관광 요소로써 체험할 수 있는 UX",
-];
+const COPY = {
+  ko: {
+    title: "팝업 형태로 브랜드 프로모션이 가능한 충전소",
+    bullets: [
+      "휴식 공간으로, 충전 중 피로를 풀 수 있는 휴게 공간 제공",
+      "브랜드 팝업 존으로, 한국 GM 브랜드를 홍보할 수 있는 프로모션 공간 제공",
+      "충전 중 휴식 외에도 새로운 관광 요소로써 체험할 수 있는 UX",
+    ],
+  },
+  en: {
+    title: "A charging station that doubles as a pop-up for brand promotion",
+    bullets: [
+      "As a rest area, a lounge where drivers can shake off fatigue while charging",
+      "As a brand pop-up zone, a promotional space for the GM Korea brand",
+      "A UX that turns charging into a new destination to experience, not just a break",
+    ],
+  },
+};
 
-export default function Solution3EV() {
+export default function Solution3EV({ locale = "ko" }: { locale?: Locale }) {
+  const { title: TITLE, bullets: BULLETS } = COPY[locale];
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {

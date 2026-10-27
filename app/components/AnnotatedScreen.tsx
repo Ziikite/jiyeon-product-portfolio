@@ -47,6 +47,39 @@ export default function AnnotatedScreen({
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // On narrow screens a chip anchored near the right edge would run past the column: pull it back inside,
+    // and if that lands it on an earlier chip, lift it above that one (with extra room reserved at the top).
+    const fit = () => {
+      const placed: { left: number; right: number; top: number; bottom: number }[] = [];
+      let lift = 0;
+      el.querySelectorAll<HTMLElement>(".sv-chip").forEach((chip) => {
+        chip.style.marginLeft = "";
+        chip.style.marginTop = "";
+        const overflow = chip.offsetLeft + chip.offsetWidth - el.clientWidth;
+        const shift = overflow > 0 ? overflow : 0;
+        const r = { left: chip.offsetLeft - shift, right: chip.offsetLeft - shift + chip.offsetWidth, top: chip.offsetTop, bottom: chip.offsetTop + chip.offsetHeight };
+        const hit = placed.find((p) => r.left < p.right + 6 && r.right > p.left - 6 && r.top < p.bottom && r.bottom > p.top);
+        if (shift) chip.style.marginLeft = `${-shift}px`;
+        if (hit) {
+          const up = r.bottom - hit.top + 6;
+          chip.style.marginTop = `${-up}px`;
+          r.top -= up;
+          r.bottom -= up;
+          lift = Math.max(lift, -r.top - topRoom);
+        }
+        placed.push(r);
+      });
+      (el.parentElement as HTMLElement).style.paddingTop = `${topRoom + Math.max(0, lift)}px`;
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [chips, topRoom]);
+
   const delay = (s: number) => ({ ["--d" as string]: `${s}s` });
 
   return (

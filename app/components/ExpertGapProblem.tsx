@@ -1,8 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
-const PAIN = "전문 인력/역량이 부족한 문제";
+const COPY = {
+  ko: {
+    pain: "전문 인력/역량이 부족한 문제",
+    title: "마이그레이션 도입 시 주요 과제",
+    label: "마이그레이션 도입 시 주요 과제: 전문 인력/역량 부족 78%",
+    bubble: "전문 인력/역량 부족",
+  },
+  en: {
+    pain: "a shortage of skilled people and expertise",
+    title: "Top challenges in adopting migration",
+    label: "Top challenges in adopting migration: lack of expertise 78%",
+    bubble: "Lack of expertise",
+  },
+};
 
 // Pie geometry (viewBox units). Slices are stroked circles whose stroke-width equals the radius, so they can sweep in.
 const CX = 200;
@@ -46,6 +60,8 @@ function useCount(target: number, run: boolean, delay: number, duration: number)
 }
 
 export default function ExpertGapProblem({ body }: { body: string }) {
+  const t = COPY[useLocale()];
+  const PAIN = t.pain;
   const markRef = useRef<HTMLSpanElement>(null);
   const chartRef = useRef<HTMLElement>(null);
   const [markOn, setMarkOn] = useState(false);
@@ -93,8 +109,8 @@ export default function ExpertGapProblem({ body }: { body: string }) {
 
       <figure ref={chartRef} className={`eg${visible ? " is-visible" : ""}`}>
         <div className="eg-card">
-          <div className="dc-title">마이그레이션 도입 시 주요 과제</div>
-          <svg className="eg-svg" viewBox="0 0 560 410" role="img" aria-label="마이그레이션 도입 시 주요 과제: 전문 인력/역량 부족 78%">
+          <div className="dc-title">{t.title}</div>
+          <svg className="eg-svg" viewBox="0 0 560 410" role="img" aria-label={t.label}>
             <defs>
               <filter id="eg-shadow" x="-30%" y="-40%" width="160%" height="200%">
                 <feDropShadow dx="0" dy="10" stdDeviation="12" floodColor="#1f2a37" floodOpacity="0.16" />
@@ -149,7 +165,7 @@ export default function ExpertGapProblem({ body }: { body: string }) {
               <g className="eg-bubble">
                 <rect x={CX + 26} y={CY + 4} width="252" height="70" rx="26" filter="url(#eg-shadow)" />
                 <text x={CX + 152} y={CY + 47} textAnchor="middle">
-                  전문 인력/역량 부족
+                  {t.bubble}
                 </text>
               </g>
             </g>

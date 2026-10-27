@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 type Values = { bounceFrom: number; bounceTo: number; convFrom: string; convFromNum: number; convTo: number };
+
+const COPY = {
+  ko: { bounce: "이탈률", down: "% 감소 ▼", conv: "전환율", up: "3배 향상 ▲", before: "기존", after: "개선 후" },
+  en: { bounce: "Bounce rate", down: "% lower ▼", conv: "Conversion", up: "3× higher ▲", before: "Before", after: "After" },
+};
 
 const BAR_MAX = 180; // px for 100% of a chart's scale
 const TOP = 52; // room above the bars for value labels and the arrow
@@ -38,6 +44,7 @@ function useCount(from: number, to: number, run: boolean, delay: number, duratio
 }
 
 export default function OutcomeBars({ values }: { values: Values }) {
+  const t = COPY[useLocale()];
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -69,7 +76,7 @@ export default function OutcomeBars({ values }: { values: Values }) {
     <div ref={ref} className={`ob${visible ? " is-visible" : ""}`}>
       <div className="ob-chart">
         <div className="ob-title">
-          이탈률<span className="ob-chip ob-chip-down">{reduction}% 감소 ▼</span>
+          {t.bounce}<span className="ob-chip ob-chip-down">{reduction}{t.down}</span>
         </div>
         <div className="ob-plot" style={{ height: TOP + BAR_MAX }}>
           <div className="ob-col ob-col-old">
@@ -92,14 +99,14 @@ export default function OutcomeBars({ values }: { values: Values }) {
           </div>
         </div>
         <div className="ob-labels">
-          <span>기존</span>
-          <span className="is-new">개선 후</span>
+          <span>{t.before}</span>
+          <span className="is-new">{t.after}</span>
         </div>
       </div>
 
       <div className="ob-chart">
         <div className="ob-title">
-          전환율<span className="ob-chip ob-chip-up">3배 향상 ▲</span>
+          {t.conv}<span className="ob-chip ob-chip-up">{t.up}</span>
         </div>
         <div className="ob-plot" style={{ height: TOP + BAR_MAX }}>
           <div className="ob-col ob-col-old">
@@ -122,8 +129,8 @@ export default function OutcomeBars({ values }: { values: Values }) {
           </div>
         </div>
         <div className="ob-labels">
-          <span>기존</span>
-          <span className="is-new">개선 후</span>
+          <span>{t.before}</span>
+          <span className="is-new">{t.after}</span>
         </div>
       </div>
     </div>

@@ -1,15 +1,12 @@
-import type { Metadata } from "next";
 import Header from "@/app/components/Header";
-import { strengths, career, education, skills, awards } from "@/app/lib/data";
+import { getContent } from "@/app/lib/content";
+import type { Locale } from "@/app/lib/i18n";
 
-export const metadata: Metadata = {
-  title: "About — 김지연",
-};
-
-export default function AboutPage() {
+export default function AboutView({ locale }: { locale: Locale }) {
+  const { strengths, career, education, skills, awards } = getContent(locale);
   return (
     <main>
-      <Header />
+      <Header locale={locale} />
 
       <section className="block" id="strengths">
         <div className="wrap">

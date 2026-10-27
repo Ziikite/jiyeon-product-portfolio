@@ -1,13 +1,39 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 export const ROUTE_UI_SIZE = { w: 1600, h: 650 };
 
-// Phrases the reference figure highlights inside the two voice scripts.
-const HIGHLIGHTS = ["현재 주유가 필요한 상태", "경유지로 설정해드릴까요?", "총 4km로, 21분 소요"];
-const AXES = ["안전감", "편안함", "매력"] as const; // clockwise from the top
 const MAX = 5;
+
+const COPY = {
+  ko: {
+    axes: ["안전감", "편안함", "매력"], // clockwise from the top
+    guidelines: "가이드라인",
+    adopted: "채택안",
+    rejected: "기각안",
+    radarLabel: "채택안과 기각안의 안전감, 편안함, 매력 점수 비교",
+    marker: /가이드라인\(([^)]+)\) :/g,
+    highlights: ["현재 주유가 필요한 상태", "경유지로 설정해드릴까요?", "총 4km로, 21분 소요"], // phrases the reference figure highlights inside the two voice scripts,
+    long: { label: "가이드라인(장거리 운전) :", title: "장거리 운전" },
+    short: { label: "가이드라인(단거리 운전) :", title: "단거리 운전" },
+    uiAlt: "경로 브리핑 차량 화면",
+  },
+  en: {
+    axes: ["Safety", "Comfort", "Appeal"],
+    guidelines: "Guidelines",
+    adopted: "Adopted",
+    rejected: "Rejected",
+    radarLabel: "Safety, comfort, and appeal scores: adopted vs. rejected design",
+    marker: /Guideline \(([^)]+)\) :/g,
+    highlights: ["You’re low on fuel", "add Yongin Rest Area as a stop?", "4 km from your current location, about 21 minutes"],
+    long: { label: "Guideline (long drive) :", title: "Long drive" },
+    short: { label: "Guideline (short drive) :", title: "Short drive" },
+    uiAlt: "Route briefing on the in-car screen",
+  },
+};
+type Copy = (typeof COPY)["ko"];
 
 type Guide = { title: string; rules: string[]; script: string };
 type Score = { name: string; adopted: number; rejected: number };
@@ -15,9 +41,9 @@ type Score = { name: string; adopted: number; rejected: number };
 const curly = (t: string) => t.replace(/'([^']+)'/g, "‘$1’");
 
 // The section body holds both guidelines, both voice scripts and the test scores as one string; split it back up.
-function parseBody(body: string) {
-  const long = body.indexOf("가이드라인(장거리 운전) :");
-  const short = body.indexOf("가이드라인(단거리 운전) :");
+function parseBody(body: string, t: Copy) {
+  const long = body.indexOf(t.long.label);
+  const short = body.indexOf(t.short.label);
   const test = body.indexOf("Test Result");
   if (long === -1 || short === -1 || test === -1) return null;
   const guide = (title: string, label: string, from: number, to: number): Guide => {
@@ -38,8 +64,8 @@ function parseBody(body: string) {
   }));
   return {
     guides: [
-      guide("장거리 운전", "가이드라인(장거리 운전) :", long, short),
-      guide("단거리 운전", "가이드라인(단거리 운전) :", short, test),
+      guide(t.long.title, t.long.label, long, short),
+      guide(t.short.title, t.short.label, short, test),
     ],
     scores,
   };
@@ -89,12 +115,12 @@ function useProgress(run: boolean, delay: number, duration: number) {
   return p;
 }
 
-function Script({ text }: { text: string }) {
+function Script({ text, highlights }: { text: string; highlights: string[] }) {
   // wrap each highlighted phrase; everything else stays plain text
   const parts: (string | { hl: string })[] = [];
   let rest = text;
   while (rest) {
-    const hit = HIGHLIGHTS.map((h) => ({ h, at: rest.indexOf(h) }))
+    const hit = highlights.map((h) => ({ h, at: rest.indexOf(h) }))
       .filter((x) => x.at !== -1)
       .sort((a, b) => a.at - b.at)[0];
     if (!hit) {
@@ -127,11 +153,11 @@ const R = 108;
 const ang = (i: number) => ((-90 + i * 120) * Math.PI) / 180; // top, bottom right, bottom left
 const pt = (i: number, r: number) => `${(CX + Math.cos(ang(i)) * r).toFixed(1)},${(CY + Math.sin(ang(i)) * r).toFixed(1)}`;
 
-function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
+function Radar({ scores, run, t }: { scores: Score[]; run: boolean; t: Copy }) {
   const p = useProgress(run, 200, 1400);
   const [focus, setFocus] = useState<"adopted" | "rejected" | null>(null);
   // order the scores to match the axes drawn (안전감 top, 편안함 bottom right, 매력 bottom left)
-  const byAxis = AXES.map((a) => scores.find((s) => s.name === a));
+  const byAxis = t.axes.map((a) => scores.find((s) => s.name === a));
   if (byAxis.some((s) => !s)) return null;
   const poly = (key: "adopted" | "rejected") => byAxis.map((s, i) => pt(i, (s![key] / MAX) * R * p)).join(" ");
   const labelPos = [
@@ -148,14 +174,14 @@ function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
       <div className="rb-legend">
         <button type="button" onMouseEnter={() => setFocus("adopted")} onMouseLeave={() => setFocus(null)} onFocus={() => setFocus("adopted")} onBlur={() => setFocus(null)}>
           <i className="is-adopted" />
-          채택안
+          {t.adopted}
         </button>
         <button type="button" onMouseEnter={() => setFocus("rejected")} onMouseLeave={() => setFocus(null)} onFocus={() => setFocus("rejected")} onBlur={() => setFocus(null)}>
           <i className="is-rejected" />
-          기각안
+          {t.rejected}
         </button>
       </div>
-      <svg viewBox="0 0 300 290" role="img" aria-label="채택안과 기각안의 안전감, 편안함, 매력 점수 비교">
+      <svg viewBox="0 0 300 290" role="img" aria-label={t.radarLabel}>
         {[1, 2, 3, 4, 5].map((k) => (
           <polygon key={k} className="rb-ring" points={[0, 1, 2].map((i) => pt(i, (k / MAX) * R)).join(" ")} />
         ))}
@@ -197,7 +223,8 @@ export default function RouteBriefing({
   uiImage: string | null;
   badges?: string[];
 }) {
-  const parsed = parseBody(body);
+  const t = COPY[useLocale()];
+  const parsed = parseBody(body, t);
   const [guideRef, guideOn] = useWatch<HTMLDivElement>(0.3);
   const [uiRef, uiOn] = useWatch<HTMLElement>(0.4);
   const [dataRef, dataOn] = useWatch<HTMLDivElement>(0.3);
@@ -206,15 +233,15 @@ export default function RouteBriefing({
 
   return (
     <div className="rb">
-      <span className="rb-pill">가이드라인</span>
+      <span className="rb-pill">{t.guidelines}</span>
 
       <figure ref={uiRef} className={`rb-ui${uiOn ? " is-on" : ""}`}>
         {uiImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={uiImage} alt="경로 브리핑 차량 화면" loading="lazy" decoding="async" />
+          <img src={uiImage} alt={t.uiAlt} loading="lazy" decoding="async" />
         ) : (
           <div className="rb-placeholder">
-            <span className="rb-placeholder-name">경로 브리핑 차량 화면</span>
+            <span className="rb-placeholder-name">{t.uiAlt}</span>
             <span className="rb-placeholder-size">
               {ROUTE_UI_SIZE.w} × {ROUTE_UI_SIZE.h}
             </span>
@@ -263,7 +290,7 @@ export default function RouteBriefing({
                   <i />
                   <i />
                 </span>
-                <Script text={g.script} />
+                <Script text={g.script} highlights={t.highlights} />
               </p>
             </div>
           ))}
@@ -271,7 +298,7 @@ export default function RouteBriefing({
       </div>
 
       <div ref={dataRef} className={`rb-data${dataOn ? " is-on" : ""}`}>
-        <Radar scores={parsed.scores} run={dataOn} />
+        <Radar scores={parsed.scores} run={dataOn} t={t} />
         <div className="rb-interview">
           <div className="rb-head">
             <b>User Interview</b>

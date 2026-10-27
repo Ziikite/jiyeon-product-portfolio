@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
+import type { Locale } from "@/app/lib/i18n";
 
-const METRICS = ["편안함", "안전", "매력"] as const;
+const COPY = {
+  ko: { metrics: ["편안함", "안전", "매력"], results: "정량 결과", before: "기존", after: "개선 후" },
+  en: { metrics: ["Comfort", "Safety", "Appeal"], results: "Quantitative results", before: "Before", after: "After" },
+};
+type Copy = (typeof COPY)["ko"];
 const BAR_MAX = 150; // px for a 5-point scale
 const TOP = 44; // room above the bars for the value label
 const SCALE = 5;
@@ -11,9 +17,9 @@ type Result = { from: number; to: number; pct: number };
 
 // Body: an intro sentence, six quoted user quotes (two per metric, in the 편안함/안전/매력 order the heading states),
 // then "정량 결과(기존 → 개선 후) : X → Y (Z%↑), ..." — three results in that same metric order.
-function parseBody(body: string) {
+function parseBody(body: string, t: Copy) {
   const firstQuoteAt = body.indexOf('"');
-  const resultsAt = body.indexOf("정량 결과");
+  const resultsAt = body.indexOf(t.results);
   if (firstQuoteAt === -1 || resultsAt === -1) return null;
   const intro = body.slice(0, firstQuoteAt).trim();
   const quotes = [...body.slice(firstQuoteAt, resultsAt).matchAll(/"([^"]+)"/g)].map((m) => m[1]);
@@ -22,7 +28,7 @@ function parseBody(body: string) {
     to: parseFloat(m[2]),
     pct: parseFloat(m[3]),
   }));
-  if (quotes.length < METRICS.length * 2 || results.length < METRICS.length) return null;
+  if (quotes.length < t.metrics.length * 2 || results.length < t.metrics.length) return null;
   return { intro, quotes, results };
 }
 
@@ -55,7 +61,19 @@ function useCount(from: number, to: number, run: boolean, delay: number, duratio
   return value;
 }
 
-function OutcomeRow({ name, result, quotes, visible }: { name: string; result: Result; quotes: [string, string]; visible: boolean }) {
+function OutcomeRow({
+  name,
+  result,
+  quotes,
+  visible,
+  t,
+}: {
+  name: string;
+  result: Result;
+  quotes: [string, string];
+  visible: boolean;
+  t: Copy;
+}) {
   const oldH = (result.from / SCALE) * BAR_MAX;
   const newH = (result.to / SCALE) * BAR_MAX;
   const value = useCount(result.from, result.to, visible, 500, 1300);
@@ -85,8 +103,8 @@ function OutcomeRow({ name, result, quotes, visible }: { name: string; result: R
           </div>
         </div>
         <div className="vo-labels">
-          <span>기존</span>
-          <span className="is-new">개선 후</span>
+          <span>{t.before}</span>
+          <span className="is-new">{t.after}</span>
         </div>
       </div>
       <div className="vo-quotes">
@@ -100,8 +118,9 @@ function OutcomeRow({ name, result, quotes, visible }: { name: string; result: R
   );
 }
 
-export default function OutcomeCompare({ body }: { body: string }) {
-  const parsed = parseBody(body);
+export default function OutcomeCompare({ body }: { body: string; locale?: Locale }) {
+  const t = COPY[useLocale()];
+  const parsed = parseBody(body, t);
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -123,13 +142,14 @@ export default function OutcomeCompare({ body }: { body: string }) {
     <>
       {parsed.intro && <p>{parsed.intro}</p>}
       <div ref={ref} className={`vo${visible ? " is-visible" : ""}`}>
-        {METRICS.map((name, i) => (
+        {t.metrics.map((name, i) => (
           <OutcomeRow
             key={name}
             name={name}
             result={parsed.results[i]}
             quotes={[parsed.quotes[i * 2], parsed.quotes[i * 2 + 1]]}
             visible={visible}
+            t={t}
           />
         ))}
       </div>

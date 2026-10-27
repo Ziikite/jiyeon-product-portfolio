@@ -1,7 +1,20 @@
 import AnnotatedScreen from "@/app/components/AnnotatedScreen";
+import type { Locale } from "@/app/lib/i18n";
+
+const ALT = { ko: "사전 조사 설문 화면", en: "Pre-assessment survey screen" };
 
 // Regions of the survey screen (1194 x 834) that the two notes point at.
-export default function SurveySolution({ body, image, labels }: { body: string; image?: string; labels: string[] }) {
+export default function SurveySolution({
+  body,
+  image,
+  labels,
+  locale = "ko",
+}: {
+  body: string;
+  image?: string;
+  labels: string[];
+  locale?: Locale;
+}) {
   const [progressLabel, writingLabel] = labels;
   return (
     <>
@@ -9,7 +22,7 @@ export default function SurveySolution({ body, image, labels }: { body: string; 
       {image && (
         <AnnotatedScreen
           image={image}
-          alt="사전 조사 설문 화면"
+          alt={ALT[locale]}
           width={1194}
           height={834}
           boxes={[

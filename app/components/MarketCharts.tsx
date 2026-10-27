@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 // Numbers come from the reference chart (TTA 2022.09 / IT 데일리 2024.01).
 const SIZE = { from: 9.2, to: 45.11 };
@@ -9,11 +10,28 @@ const BAR_MAX = 210; // px for the tallest bar
 // Bubble diameters follow sqrt(value) so the areas are proportional; positions are hand-placed inside a 320 x 340 box.
 const K = 190 / Math.sqrt(79);
 const BUBBLES = [
-  { value: 79, label: "클라우드 전환", x: 0, y: 20, tone: "main" },
-  { value: 22, label: "정보보안", x: 205, y: 60, tone: "gray" },
-  { value: 56, label: "AI 구축", x: 150, y: 170, tone: "light" },
-  { value: 33, label: "데이터 분석\n시스템 구축", x: 10, y: 215, tone: "gray" },
+  { value: 79, label: { ko: "클라우드 전환", en: "Cloud\nmigration" }, x: 0, y: 20, tone: "main" },
+  { value: 22, label: { ko: "정보보안", en: "Security" }, x: 205, y: 60, tone: "gray" },
+  { value: 56, label: { ko: "AI 구축", en: "AI adoption" }, x: 150, y: 170, tone: "light" },
+  { value: 33, label: { ko: "데이터 분석\n시스템 구축", en: "Data\nanalytics" }, x: 10, y: 215, tone: "gray" },
 ] as const;
+
+const COPY = {
+  ko: {
+    sizeTitle: "글로벌 클라우드 마이그레이션 시장 규모 (10억달러)",
+    growth: "성장률",
+    sizeSource: "한국정보통신기술협회(TTA), 2022.09, 클라우드 마이그레이션 산업 및 기술 동향",
+    bubbleTitle: "현재 회사 및 기관에서 추진 중인 IT 관련 사업",
+    bubbleSource: "IT 데일리, 2024.01, “AI 구축 프로젝트 비중 41%… 클라우드 시장에도 AI바람이 분다”",
+  },
+  en: {
+    sizeTitle: "Global cloud migration market size (unit: USD 100M)",
+    growth: "Growth rate",
+    sizeSource: "Telecommunications Technology Association (TTA), 2022.09, Cloud Migration Industry and Technology Trends",
+    bubbleTitle: "IT initiatives companies and institutions are pursuing",
+    bubbleSource: "IT Daily, 2024.01, “AI projects make up 41%… AI winds reach the cloud market, too”",
+  },
+};
 
 function useCount(target: number, run: boolean, delay: number, duration: number, digits: number) {
   const [value, setValue] = useState(0);
@@ -45,6 +63,8 @@ function useCount(target: number, run: boolean, delay: number, duration: number,
 }
 
 export default function MarketCharts() {
+  const locale = useLocale();
+  const t = COPY[locale];
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [hoverBar, setHoverBar] = useState<number | null>(null);
@@ -70,7 +90,7 @@ export default function MarketCharts() {
   return (
     <div ref={ref} className={`mc${visible ? " is-visible" : ""}`}>
       <figure className="mc-chart">
-        <figcaption className="mc-title">글로벌 클라우드 마이그레이션 시장 규모 (10억달러)</figcaption>
+        <figcaption className="mc-title">{t.sizeTitle}</figcaption>
         <div className={`mc-bars${hoverBar !== null ? " has-hover" : ""}`}>
           <div className="mc-plot" style={{ height: BAR_MAX + 56 }}>
             {[
@@ -109,7 +129,7 @@ export default function MarketCharts() {
               </g>
             </svg>
             <div className="mc-growth-label">
-              <span>성장률</span>
+              <span>{t.growth}</span>
               <b>{growthShown.toFixed(1)}%</b>
             </div>
           </div>
@@ -119,11 +139,11 @@ export default function MarketCharts() {
             <span style={{ left: 216 }}>2028</span>
           </div>
         </div>
-        <p className="mc-source">한국정보통신기술협회(TTA), 2022.09, 클라우드 마이그레이션 산업 및 기술 동향</p>
+        <p className="mc-source">{t.sizeSource}</p>
       </figure>
 
       <figure className="mc-chart">
-        <figcaption className="mc-title">현재 회사 및 기관에서 추진 중인 IT 관련 사업</figcaption>
+        <figcaption className="mc-title">{t.bubbleTitle}</figcaption>
         <div className={`mc-bubbles${hoverBubble !== null ? " has-hover" : ""}`}>
           {BUBBLES.map((b, i) => {
             const d = K * Math.sqrt(b.value);
@@ -145,13 +165,13 @@ export default function MarketCharts() {
               >
                 <span className="mc-bubble-inner">
                   <b>{b.value}%</b>
-                  <span>{b.label}</span>
+                  <span>{b.label[locale]}</span>
                 </span>
               </div>
             );
           })}
         </div>
-        <p className="mc-source">IT 데일리, 2024.01, “AI 구축 프로젝트 비중 41%… 클라우드 시장에도 AI바람이 분다”</p>
+        <p className="mc-source">{t.bubbleSource}</p>
       </figure>
     </div>
   );

@@ -1,12 +1,35 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
+import type { Locale } from "@/app/lib/i18n";
 
-const AXES = ["안전감", "편안함", "매력"] as const; // clockwise from the top
 const MAX = 5;
 
-// Phrase highlighted inside the first guide's final agent line (and its echo in the chat mock-up).
-const HIGHLIGHTS = ["60%로 비 예보가 있습니다"];
+const COPY = {
+  ko: {
+    axes: ["안전감", "편안함", "매력"], // clockwise from the top
+    guidelines: "가이드라인",
+    adopted: "채택안",
+    rejected: "기각안",
+    radarLabel: "채택안과 기각안의 안전감, 편안함, 매력 점수 비교",
+    marker: /가이드라인\(([^)]+)\) :/g,
+    highlights: ["60%로 비 예보가 있습니다"], // highlighted inside the first guide's final agent line (and its echo in the chat mock-up),
+
+  },
+  en: {
+    axes: ["Safety", "Comfort", "Appeal"],
+    guidelines: "Guidelines",
+    adopted: "Adopted",
+    rejected: "Rejected",
+    radarLabel: "Safety, comfort, and appeal scores: adopted vs. rejected design",
+    marker: /Guideline \(([^)]+)\) :/g,
+    highlights: ["There’s a 60% chance of rain"],
+
+  },
+};
+type Copy = (typeof COPY)["ko"];
+
 
 type Guide = { title: string; rules: string[]; turns: string[] };
 type Score = { name: string; adopted: number; rejected: number };
@@ -15,8 +38,8 @@ const curly = (t: string) => t.replace(/'([^']+)'/g, "‘$1’");
 
 // The section body holds N guidelines (each "가이드라인(제목) : ...") plus the test scores as one string.
 // A guide's quoted script may itself hold several " / "-separated conversation turns.
-function parseBody(body: string) {
-  const markers = [...body.matchAll(/가이드라인\(([^)]+)\) :/g)];
+function parseBody(body: string, t: Copy) {
+  const markers = [...body.matchAll(t.marker)];
   const testAt = body.indexOf("Test Result");
   if (!markers.length || testAt === -1) return null;
 
@@ -88,12 +111,12 @@ function useProgress(run: boolean, delay: number, duration: number) {
 }
 
 // wraps HIGHLIGHTS phrases in <mark>; `full` highlights the entire line instead (used for the exception guide's examples)
-function Script({ text, full }: { text: string; full?: boolean }) {
+function Script({ text, full, highlights }: { text: string; full?: boolean; highlights: string[] }) {
   if (full) return <mark className="rb-mark">{text}</mark>;
   const parts: (string | { hl: string })[] = [];
   let rest = text;
   while (rest) {
-    const hit = HIGHLIGHTS.map((h) => ({ h, at: rest.indexOf(h) }))
+    const hit = highlights.map((h) => ({ h, at: rest.indexOf(h) }))
       .filter((x) => x.at !== -1)
       .sort((a, b) => a.at - b.at)[0];
     if (!hit) {
@@ -126,10 +149,10 @@ const R = 108;
 const ang = (i: number) => ((-90 + i * 120) * Math.PI) / 180;
 const pt = (i: number, r: number) => `${(CX + Math.cos(ang(i)) * r).toFixed(1)},${(CY + Math.sin(ang(i)) * r).toFixed(1)}`;
 
-function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
+function Radar({ scores, run, t }: { scores: Score[]; run: boolean; t: Copy }) {
   const p = useProgress(run, 200, 1400);
   const [focus, setFocus] = useState<"adopted" | "rejected" | null>(null);
-  const byAxis = AXES.map((a) => scores.find((s) => s.name === a));
+  const byAxis = t.axes.map((a) => scores.find((s) => s.name === a));
   if (byAxis.some((s) => !s)) return null;
   const poly = (key: "adopted" | "rejected") => byAxis.map((s, i) => pt(i, (s![key] / MAX) * R * p)).join(" ");
   const labelPos = [
@@ -146,14 +169,14 @@ function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
       <div className="rb-legend">
         <button type="button" onMouseEnter={() => setFocus("adopted")} onMouseLeave={() => setFocus(null)} onFocus={() => setFocus("adopted")} onBlur={() => setFocus(null)}>
           <i className="is-adopted" />
-          채택안
+          {t.adopted}
         </button>
         <button type="button" onMouseEnter={() => setFocus("rejected")} onMouseLeave={() => setFocus(null)} onFocus={() => setFocus("rejected")} onBlur={() => setFocus(null)}>
           <i className="is-rejected" />
-          기각안
+          {t.rejected}
         </button>
       </div>
-      <svg viewBox="0 0 300 290" role="img" aria-label="채택안과 기각안의 안전감, 편안함, 매력 점수 비교">
+      <svg viewBox="0 0 300 290" role="img" aria-label={t.radarLabel}>
         {[1, 2, 3, 4, 5].map((k) => (
           <polygon key={k} className="rb-ring" points={[0, 1, 2].map((i) => pt(i, (k / MAX) * R)).join(" ")} />
         ))}
@@ -176,8 +199,9 @@ function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
   );
 }
 
-export default function InfoOverlap({ body, quotes }: { body: string; quotes: string[] }) {
-  const parsed = parseBody(body);
+export default function InfoOverlap({ body, quotes }: { body: string; quotes: string[]; locale?: Locale }) {
+  const t = COPY[useLocale()];
+  const parsed = parseBody(body, t);
   const [guideRef, guideOn] = useWatch<HTMLDivElement>(0.3);
   const [chatRef, chatOn] = useWatch<HTMLDivElement>(0.4);
   const [dataRef, dataOn] = useWatch<HTMLDivElement>(0.3);
@@ -189,7 +213,7 @@ export default function InfoOverlap({ body, quotes }: { body: string; quotes: st
 
   return (
     <div className="rb">
-      <span className="rb-pill">가이드라인</span>
+      <span className="rb-pill">{t.guidelines}</span>
 
       <div ref={chatRef} className={`io-chat${chatOn ? " is-on" : ""}`}>
         {base?.turns.map((turn, i) => {
@@ -197,7 +221,7 @@ export default function InfoOverlap({ body, quotes }: { body: string; quotes: st
           return (
             <div key={i} className={`io-row${isUser ? " io-row-user" : " io-row-agent"}`} style={{ ["--i" as string]: i } as CSSProperties}>
               {isUser && <span className="io-avatar io-avatar-user" aria-hidden="true">👤</span>}
-              <p className="io-bubble">{i === base.turns.length - 1 ? <Script text={turn} /> : turn}</p>
+              <p className="io-bubble">{i === base.turns.length - 1 ? <Script text={turn} highlights={t.highlights} /> : turn}</p>
               {!isUser && <span className="io-avatar io-avatar-car" aria-hidden="true">🚗</span>}
             </div>
           );
@@ -234,7 +258,7 @@ export default function InfoOverlap({ body, quotes }: { body: string; quotes: st
                     <i />
                     <i />
                   </span>
-                  <Script text={turn} full={g === exception} />
+                  <Script text={turn} full={g === exception} highlights={t.highlights} />
                 </p>
               ))}
             </div>
@@ -243,7 +267,7 @@ export default function InfoOverlap({ body, quotes }: { body: string; quotes: st
       </div>
 
       <div ref={dataRef} className={`rb-data${dataOn ? " is-on" : ""}`}>
-        <Radar scores={parsed.scores} run={dataOn} />
+        <Radar scores={parsed.scores} run={dataOn} t={t} />
         <div className="rb-interview">
           <div className="rb-head">
             <b>User Interview</b>

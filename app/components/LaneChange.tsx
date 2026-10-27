@@ -1,12 +1,34 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
-const AXES = ["안전감", "편안함", "매력"] as const; // clockwise from the top
 const MAX = 5;
 
-// Phrases the reference figure highlights inside the three voice scripts (and the callout bubble).
-const HIGHLIGHTS = ["교차로에서 우회전", "도로 정체가 있으므로", "왼쪽 차선으로 변경", "낙석이 있습니다", "차선을 변경"];
+const COPY = {
+  ko: {
+    axes: ["안전감", "편안함", "매력"], // clockwise from the top
+    guidelines: "가이드라인",
+    adopted: "채택안",
+    rejected: "기각안",
+    radarLabel: "채택안과 기각안의 안전감, 편안함, 매력 점수 비교",
+    marker: /가이드라인\(([^)]+)\) :/g,
+    highlights: ["교차로에서 우회전", "도로 정체가 있으므로", "왼쪽 차선으로 변경", "낙석이 있습니다", "차선을 변경"], // phrases the reference figure highlights inside the scripts (and the callout bubble),
+    uiAlt: "차선 변경 안내 차량 화면",
+  },
+  en: {
+    axes: ["Safety", "Comfort", "Appeal"],
+    guidelines: "Guidelines",
+    adopted: "Adopted",
+    rejected: "Rejected",
+    radarLabel: "Safety, comfort, and appeal scores: adopted vs. rejected design",
+    marker: /Guideline \(([^)]+)\) :/g,
+    highlights: ["Turn right at the intersection", "There’s congestion ahead", "move into the left lane", "fallen rock on the road ahead", "change lanes"],
+    uiAlt: "Lane change guidance on the in-car screen",
+  },
+};
+type Copy = (typeof COPY)["ko"];
+
 
 type Guide = { title: string; rules: string[]; script: string };
 type Score = { name: string; adopted: number; rejected: number };
@@ -14,8 +36,8 @@ type Score = { name: string; adopted: number; rejected: number };
 const curly = (t: string) => t.replace(/'([^']+)'/g, "‘$1’");
 
 // The section body holds N guidelines (each "가이드라인(제목) : ...") plus the test scores as one string.
-function parseBody(body: string) {
-  const markers = [...body.matchAll(/가이드라인\(([^)]+)\) :/g)];
+function parseBody(body: string, t: Copy) {
+  const markers = [...body.matchAll(t.marker)];
   const testAt = body.indexOf("Test Result");
   if (!markers.length || testAt === -1) return null;
 
@@ -84,11 +106,11 @@ function useProgress(run: boolean, delay: number, duration: number) {
   return p;
 }
 
-function Script({ text }: { text: string }) {
+function Script({ text, highlights }: { text: string; highlights: string[] }) {
   const parts: (string | { hl: string })[] = [];
   let rest = text;
   while (rest) {
-    const hit = HIGHLIGHTS.map((h) => ({ h, at: rest.indexOf(h) }))
+    const hit = highlights.map((h) => ({ h, at: rest.indexOf(h) }))
       .filter((x) => x.at !== -1)
       .sort((a, b) => a.at - b.at)[0];
     if (!hit) {
@@ -121,10 +143,10 @@ const R = 108;
 const ang = (i: number) => ((-90 + i * 120) * Math.PI) / 180;
 const pt = (i: number, r: number) => `${(CX + Math.cos(ang(i)) * r).toFixed(1)},${(CY + Math.sin(ang(i)) * r).toFixed(1)}`;
 
-function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
+function Radar({ scores, run, t }: { scores: Score[]; run: boolean; t: Copy }) {
   const p = useProgress(run, 200, 1400);
   const [focus, setFocus] = useState<"adopted" | "rejected" | null>(null);
-  const byAxis = AXES.map((a) => scores.find((s) => s.name === a));
+  const byAxis = t.axes.map((a) => scores.find((s) => s.name === a));
   if (byAxis.some((s) => !s)) return null;
   const poly = (key: "adopted" | "rejected") => byAxis.map((s, i) => pt(i, (s![key] / MAX) * R * p)).join(" ");
   const labelPos = [
@@ -141,14 +163,14 @@ function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
       <div className="rb-legend">
         <button type="button" onMouseEnter={() => setFocus("adopted")} onMouseLeave={() => setFocus(null)} onFocus={() => setFocus("adopted")} onBlur={() => setFocus(null)}>
           <i className="is-adopted" />
-          채택안
+          {t.adopted}
         </button>
         <button type="button" onMouseEnter={() => setFocus("rejected")} onMouseLeave={() => setFocus(null)} onFocus={() => setFocus("rejected")} onBlur={() => setFocus(null)}>
           <i className="is-rejected" />
-          기각안
+          {t.rejected}
         </button>
       </div>
-      <svg viewBox="0 0 300 290" role="img" aria-label="채택안과 기각안의 안전감, 편안함, 매력 점수 비교">
+      <svg viewBox="0 0 300 290" role="img" aria-label={t.radarLabel}>
         {[1, 2, 3, 4, 5].map((k) => (
           <polygon key={k} className="rb-ring" points={[0, 1, 2].map((i) => pt(i, (k / MAX) * R)).join(" ")} />
         ))}
@@ -172,7 +194,8 @@ function Radar({ scores, run }: { scores: Score[]; run: boolean }) {
 }
 
 export default function LaneChange({ body, quotes, uiImage }: { body: string; quotes: string[]; uiImage: string | null }) {
-  const parsed = parseBody(body);
+  const t = COPY[useLocale()];
+  const parsed = parseBody(body, t);
   const [guideRef, guideOn] = useWatch<HTMLDivElement>(0.3);
   const [uiRef, uiOn] = useWatch<HTMLElement>(0.4);
   const [dataRef, dataOn] = useWatch<HTMLDivElement>(0.3);
@@ -184,20 +207,20 @@ export default function LaneChange({ body, quotes, uiImage }: { body: string; qu
 
   return (
     <div className="rb">
-      <span className="rb-pill">가이드라인</span>
+      <span className="rb-pill">{t.guidelines}</span>
 
       <figure ref={uiRef} className={`rb-ui lc-ui${uiOn ? " is-on" : ""}`}>
         {bubbleScript && (
           <p className="lc-bubble">
-            <Script text={bubbleScript} />
+            <Script text={bubbleScript} highlights={t.highlights} />
           </p>
         )}
         {uiImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={uiImage} alt="차선 변경 안내 차량 화면" loading="lazy" decoding="async" />
+          <img src={uiImage} alt={t.uiAlt} loading="lazy" decoding="async" />
         ) : (
           <div className="rb-placeholder">
-            <span className="rb-placeholder-name">차선 변경 안내 차량 화면</span>
+            <span className="rb-placeholder-name">{t.uiAlt}</span>
           </div>
         )}
       </figure>
@@ -231,7 +254,7 @@ export default function LaneChange({ body, quotes, uiImage }: { body: string; qu
                   <i />
                   <i />
                 </span>
-                <Script text={g.script} />
+                <Script text={g.script} highlights={t.highlights} />
               </p>
             </div>
           ))}
@@ -239,7 +262,7 @@ export default function LaneChange({ body, quotes, uiImage }: { body: string; qu
       </div>
 
       <div ref={dataRef} className={`rb-data${dataOn ? " is-on" : ""}`}>
-        <Radar scores={parsed.scores} run={dataOn} />
+        <Radar scores={parsed.scores} run={dataOn} t={t} />
         <div className="rb-interview">
           <div className="rb-head">
             <b>User Interview</b>

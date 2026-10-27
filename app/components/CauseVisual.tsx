@@ -1,11 +1,12 @@
 import OverlapWindows from "@/app/components/OverlapWindows";
 import CompareVisuals from "@/app/components/CompareVisuals";
 import { findImage } from "@/app/lib/findImage";
+import type { Locale } from "@/app/lib/i18n";
 
 const SHOTS = [
-  { key: "intro", label: "소개 페이지", base: "clas-problem-intro" },
-  { key: "purchase", label: "구매 페이지", base: "clas-problem-purchase" },
-  { key: "use", label: "사용 페이지", base: "clas-problem-use" },
+  { key: "intro", label: { ko: "소개 페이지", en: "Intro page" }, base: "clas-problem-intro" },
+  { key: "purchase", label: { ko: "구매 페이지", en: "Purchase page" }, base: "clas-problem-purchase" },
+  { key: "use", label: { ko: "사용 페이지", en: "Usage page" }, base: "clas-problem-use" },
 ];
 
 function ItemHead({ no, text }: { no: number; text: string }) {
@@ -17,8 +18,8 @@ function ItemHead({ no, text }: { no: number; text: string }) {
   );
 }
 
-export default function CauseVisual({ body, list }: { body: string; list: string[] }) {
-  const shots = SHOTS.map((s) => ({ key: s.key, label: s.label, src: findImage(s.base) }));
+export default function CauseVisual({ body, list, locale = "ko" }: { body: string; list: string[]; locale?: Locale }) {
+  const shots = SHOTS.map((s) => ({ key: s.key, label: s.label[locale], src: findImage(s.base) }));
 
   return (
     <>
@@ -32,7 +33,7 @@ export default function CauseVisual({ body, list }: { body: string; list: string
       {list[1] && (
         <div className="cv-item">
           <ItemHead no={2} text={list[1]} />
-          <CompareVisuals />
+          <CompareVisuals locale={locale} />
         </div>
       )}
     </>

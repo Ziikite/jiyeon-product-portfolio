@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import type { Locale } from "@/app/lib/i18n";
+
+const HEADS = { ko: ["문제 원인", "인사이트"], en: ["Root cause", "Insight"] };
 
 type Row = { voc: string; cause: string; insight: string };
 
@@ -35,7 +38,7 @@ function Arrow({ variant }: { variant: "voc-cause" | "cause-insight" }) {
   );
 }
 
-export default function CauseVisualEV({ body, list }: { body: string; list: string[] }) {
+export default function CauseVisualEV({ body, list, locale = "ko" }: { body: string; list: string[]; locale?: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -56,9 +59,9 @@ export default function CauseVisualEV({ body, list }: { body: string; list: stri
         <div className="cv-head">
           <span>VoC</span>
           <span />
-          <span>문제 원인</span>
+          <span>{HEADS[locale][0]}</span>
           <span />
-          <span>인사이트</span>
+          <span>{HEADS[locale][1]}</span>
         </div>
         {rows.map((row, i) => (
           <div key={row.voc} className="cv-row" style={{ ["--i" as string]: i } as CSSProperties}>

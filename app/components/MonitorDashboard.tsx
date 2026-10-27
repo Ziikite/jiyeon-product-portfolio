@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { useLocale } from "@/app/lib/LocaleContext";
 
 // The monitoring dashboard (1194 x 834) rebuilt as layers of the same screenshot: every card is its own clipped copy of the
 // image, so cards can rise in one by one, lift on hover, and the gauges / counters / gantt bars can be redrawn over it.
@@ -36,6 +37,8 @@ const GAUGES = [
   { cx: 1012, value: 87.3, color: "#FF5546", label: "CPU 로드" },
 ];
 const GAUGE_Y = 648;
+
+const LABEL = { ko: "마이그레이션 모니터링 대시보드 화면", en: "Migration monitoring dashboard screen" };
 const GAUGE_R = 50;
 
 // Status counters: badge centre x and value.
@@ -115,6 +118,7 @@ function Counter({ c, on, delay }: { c: (typeof COUNTERS)[number]; on: boolean; 
 }
 
 export default function MonitorDashboard({ image = DEFAULT_IMG }: { image?: string }) {
+  const locale = useLocale();
   const uid = useId().replace(/:/g, "");
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
@@ -149,7 +153,7 @@ export default function MonitorDashboard({ image = DEFAULT_IMG }: { image?: stri
 
   return (
     <div ref={ref} className={`md${on ? " is-on" : ""}`} style={{ aspectRatio: `${W} / ${H}` }}>
-      <svg className="md-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="마이그레이션 모니터링 대시보드 화면">
+      <svg className="md-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={LABEL[locale]}>
         <defs>
           <clipPath id={`${uid}-base`}>
             <path
