@@ -16,7 +16,7 @@ export const profile = {
     "Across fintech, cloud, mobility, commerce, and delivery, I've analyzed qualitative data from more than 366 users and turned it into solutions that fit their real context.",
   email: "thingzwell@gmail.com",
   phone: "010-2835-3619",
-  resumeUrl: "https://drive.google.com/file/d/1sIo2LergOQy2tsaw9t5FXeh84NpFBiUS/view?usp=sharing",
+  resumeUrl: "https://drive.google.com/file/d/1E_KYuiweMTJf0xgEZ_nKsN3CrbZv9NFl/view?usp=sharing",
 };
 
 export const aboutIntro = [
