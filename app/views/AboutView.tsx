@@ -65,7 +65,10 @@ export default function AboutView({ locale }: { locale: Locale }) {
                   <li className="about-item" key={`${entry.org}-${entry.period}`}>
                     <p className="about-item-period">{entry.period}</p>
                     <div>
-                      <h3 className="about-item-title">{entry.org}</h3>
+                      <h3 className="about-item-title">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img className="career-logo" src={entry.logo} alt={entry.org} />
+                      </h3>
                       <p className="about-item-sub">{entry.role}</p>
                       <div className="about-item-groups">
                         {entry.groups.map((group) => (

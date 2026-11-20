@@ -86,7 +86,7 @@ export type CareerEntry = {
 
 export const career: CareerEntry[] = [
   {
-    period: "2026.04 — 2026.07",
+    period: "2026.04 — 2026.08",
     role: "UX Researcher",
     org: "우아한형제들",
     logo: "/logos/woowa.svg",
