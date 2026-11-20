@@ -1,4 +1,4 @@
-import type { CareerEntry, Project } from "@/app/lib/data";
+import type { AboutSection, CareerEntry, Project } from "@/app/lib/data";
 import { project as glnFaq } from "@/app/lib/en/gln-faq";
 import { project as clasConversion } from "@/app/lib/en/clas-conversion";
 import { project as cloudMigration } from "@/app/lib/en/cloud-migration";
@@ -19,26 +19,67 @@ export const profile = {
   resumeUrl: "https://drive.google.com/file/d/1sIo2LergOQy2tsaw9t5FXeh84NpFBiUS/view?usp=sharing",
 };
 
-export const strengths = [
+export const aboutIntro = [
+  "Across fintech, cloud, mobility, commerce, and delivery, I've analyzed qualitative data from more than 366 users and turned it into solutions that fit their real context.",
+  "From new-business service planning at TmaxCloud to payment-service UX at GLN International and user research at Woowa Brothers, I've taken on very different kinds of work. Here is what I've come to value along the way, and how I work today.",
+];
+
+export const aboutSections: AboutSection[] = [
   {
-    title: "Problem definition and user-centered analysis",
-    bullets: [
-      "I systematically uncover user pain points with a wide range of qualitative and quantitative methods — journey mapping, interviews, shadowing, surveys, SUS, and A/B testing.",
-      "From in-car voice agents to metaverse exhibitions and cloud migration, I've found the core of the problem in very different domains, surfaced key needs, and shaped the direction of the service.",
+    num: "01",
+    title: "What Matters",
+    sub: "What I value",
+    essays: [
+      {
+        title: "Problem definition and user-centered analysis",
+        paragraphs: [
+          "I systematically uncover user pain points with a wide range of qualitative and quantitative methods — journey mapping, interviews, shadowing, surveys, SUS, and A/B testing.",
+          "From in-car voice agents to metaverse exhibitions and cloud migration, I've found the core of the problem in very different domains, surfaced key needs, and shaped the direction of the service.",
+        ],
+      },
+      {
+        title: "Data-driven decisions and hypothesis validation",
+        paragraphs: [
+          "I set data-informed UX hypotheses and validate usability and satisfaction by pairing experiments (A/B tests, surveys) with interviews.",
+          "In a digital exhibition UX study, I used PCA and regression models to identify what drives satisfaction and turned the findings into service improvements.",
+        ],
+      },
+      {
+        title: "Project leadership and stakeholder alignment",
+        paragraphs: [
+          "Working with designers, developers, marketers, and external partners, I've led the whole process — from writing proposals and coordinating schedules to sharing deliverables and gathering feedback.",
+          "As team lead or PM in hackathons, industry–academia collaborations, and corporate projects, I've delivered results on schedule even in complex situations.",
+        ],
+      },
     ],
   },
   {
-    title: "Data-driven decisions and hypothesis validation",
-    bullets: [
-      "I set data-informed UX hypotheses and validate usability and satisfaction by pairing experiments (A/B tests, surveys) with interviews.",
-      "In a digital exhibition UX study, I used PCA and regression models to identify what drives satisfaction and turned the findings into service improvements.",
-    ],
-  },
-  {
-    title: "Project leadership and stakeholder alignment",
-    bullets: [
-      "Working with designers, developers, marketers, and external partners, I've led the whole process — from writing proposals and coordinating schedules to sharing deliverables and gathering feedback.",
-      "As team lead or PM in hackathons, industry–academia collaborations, and corporate projects, I've delivered results on schedule even in complex situations.",
+    num: "02",
+    title: "In Practice",
+    sub: "How I work",
+    essays: [
+      {
+        title: "I set the hypothesis and how to check it first.",
+        paragraphs: [
+          "When improving Woowa Brothers' group-order service, I started from the data: 63.1% of hosts used it once and never came back.",
+          "I built hypotheses around a four-step journey — entry, checking status, completing the order, and splitting the bill — and designed two rounds of usability tests with four hosts and four participants. What we observed was cross-checked against 310,000 group-order attempts.",
+          "Two problems came up consistently: hosts failed to enter because they didn't know the feature existed, and participants didn't understand the term \"confirm menu.\"",
+        ],
+      },
+      {
+        title: "I turn what users say into data.",
+        paragraphs: [
+          "To improve GLN International's FAQ, I ran frequency analysis and topic modeling in Python on 3,929 customer inquiries.",
+          "I re-categorized the main inquiry types — payment errors, refunds, limits, verification, how-to — and rewrote every question and sentence of an FAQ that had been written in internal jargon, using the users' own language.",
+        ],
+      },
+      {
+        title: "I build the means to measure first.",
+        paragraphs: [
+          "When improving TmaxCloud's pre-sales website, there was no way to collect KPIs, so I set up Google Analytics and Beusable myself. After reworking the CTA buttons and layout, bounce rate dropped 38% and conversion rose 2.3 percentage points.",
+          "At Woowa Brothers, research data was scattered across Google Sheets and Jira and tallied by hand every month. I automated collection and syncing with n8n (refreshed every 15 minutes), defined the key metrics, and shipped it as a research dashboard.",
+        ],
+      },
     ],
   },
 ];

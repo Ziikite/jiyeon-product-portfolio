@@ -3,34 +3,47 @@ import { getContent } from "@/app/lib/content";
 import type { Locale } from "@/app/lib/i18n";
 
 export default function AboutView({ locale }: { locale: Locale }) {
-  const { strengths, career, education, skills, awards } = getContent(locale);
+  const { profile, aboutIntro, aboutSections, career, education, skills, awards } = getContent(locale);
   return (
     <main>
       <Header locale={locale} />
 
-      <section className="block" id="strengths">
+      <section className="block about-block" id="about">
         <div className="wrap">
-          <div className="block-head">
-            <h2>About</h2>
+          <div className="about-intro">
+            <p className="about-label">About</p>
+            <div className="about-intro-body">
+              <h1>
+                {profile.nameKo} · {profile.name}
+              </h1>
+              <p className="about-intro-role">{profile.role}</p>
+              <div className="about-intro-text">
+                {aboutIntro.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="strength-list">
-            {strengths.map((strength, i) => (
-              <div className="strength-row" key={strength.title}>
-                <div className="strength-index-col">
-                  <span className="strength-index">{String(i + 1).padStart(2, "0")}</span>
-                </div>
-                <div>
-                  <h3>{strength.title}</h3>
-                  <ul className="career-bullets">
-                    {strength.bullets.map((bullet) => (
-                      <li key={bullet}>{bullet}</li>
-                    ))}
-                  </ul>
-                </div>
+          {aboutSections.map((section) => (
+            <section className="about-section" key={section.num} aria-labelledby={`about-h-${section.num}`}>
+              <div className="about-section-heading">
+                <p className="about-section-num">{section.num}.</p>
+                <h2 id={`about-h-${section.num}`}>{section.title}</h2>
+                <p className="about-section-sub">{section.sub}</p>
               </div>
-            ))}
-          </div>
+              <div className="about-section-content">
+                {section.essays.map((essay) => (
+                  <article className="about-essay" key={essay.title}>
+                    <h3>{essay.title}</h3>
+                    {essay.paragraphs.map((p) => (
+                      <p key={p}>{p}</p>
+                    ))}
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </section>
 
