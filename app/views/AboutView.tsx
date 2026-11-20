@@ -69,8 +69,9 @@ export default function AboutView({ locale }: { locale: Locale }) {
                       <img className="career-logo" src={entry.logo} alt="" aria-hidden="true" />
                     </div>
                     <div>
-                      <h3 className="about-item-title">{entry.org}</h3>
-                      <p className="about-item-sub">{entry.role}</p>
+                      <h3 className="about-item-title">
+                        {entry.org} · {entry.role}
+                      </h3>
                       <div className="about-item-groups">
                         {entry.groups.map((group) => (
                           <div key={group.heading}>
