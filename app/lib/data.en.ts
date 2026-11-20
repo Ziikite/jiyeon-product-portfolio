@@ -55,14 +55,6 @@ export const aboutSections: AboutSection[] = [
     sub: "How I work",
     essays: [
       {
-        title: "I set the hypothesis and how to check it first.",
-        paragraphs: [
-          "When improving Woowa Brothers' group-order service, I started from the data: 63.1% of hosts used it once and never came back.",
-          "I built hypotheses around a four-step journey — entry, checking status, completing the order, and splitting the bill — and designed two rounds of usability tests with four hosts and four participants. What we observed was cross-checked against 310,000 group-order attempts.",
-          "Two problems came up consistently: hosts failed to enter because they didn't know the feature existed, and participants didn't understand the term \"confirm menu.\"",
-        ],
-      },
-      {
         title: "I confirm before I'm convinced.",
         paragraphs: [
           "Even when a hypothesis I've set seems right, I keep it as a hypothesis. When I actually meet users, my initial assumptions get overturned more often than I'd expect.",
