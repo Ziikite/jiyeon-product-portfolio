@@ -20,6 +20,8 @@ export const profile = {
 };
 
 export const aboutIntro = [
+  "I'm someone who is curious about why people behave the way they do.",
+  "Looking at the same screen, some people pass by and others stop. To me, planning is less about deciding what to build and more about understanding who stops, where, and why. Once you know why, what needs to be built naturally narrows down.",
   "Across fintech, cloud, mobility, commerce, and delivery, I've analyzed qualitative data from more than 366 users and turned it into solutions that fit their real context.",
   "From new-business service planning at TmaxCloud to payment-service UX at GLN International and user research at Woowa Brothers, I've taken on very different kinds of work. Here is what I've come to value along the way, and how I work today.",
 ];
@@ -30,6 +32,21 @@ export const aboutSections: AboutSection[] = [
     title: "What Matters",
     sub: "What I value",
     essays: [
+      {
+        title: "Data is another language for understanding people.",
+        paragraphs: [
+          "I'm not good at reading people's feelings from the mood or by instinct. Because I dig into causes first, I've been told I come across as cold, or that I probe too much. For a long time, I thought it was something I had to fix.",
+          "Work changed my mind. Thousands of inquiries and click logs recorded exactly where people felt anxious and where they gave up. What I couldn't sense by instinct, I could understand through data.",
+          "So when I look at numbers, I also ask, \"What didn't this person know at that moment?\" To me, numbers aren't conclusions — they're clues that lead me closer to people.",
+        ],
+      },
+      {
+        title: "With the fundamentals, you can make it down an unfamiliar slope.",
+        paragraphs: [
+          "As a child, I once went up a black-diamond ski run for the first time. I had no fancy technique, but I made it all the way down with just the basics I'd learned. My parents didn't take me down that slope; they waited at the bottom until I got there on my own.",
+          "Since then, unfamiliar situations haven't scared me much. Even facing a new domain or a tool I've never used, I believe I can find my way by going back to the basics — defining the problem and checking with users. That's probably why I often hear, \"You always seem to be the first to try something new.\"",
+        ],
+      },
       {
         title: "Problem definition and user-centered analysis",
         paragraphs: [
