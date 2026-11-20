@@ -6,10 +6,6 @@ export const metadata: Metadata = {
   title: "Jiyeon Kim — Service Planner",
   description:
     "Portfolio of Jiyeon Kim, a service planner who connects user data and context to design experiences that ship.",
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-  },
   alternates: { languages: { ko: "/", en: "/en" } },
 };
 
