@@ -47,27 +47,6 @@ export const aboutSections: AboutSection[] = [
           "Since then, unfamiliar situations haven't scared me much. Even facing a new domain or a tool I've never used, I believe I can find my way by going back to the basics — defining the problem and checking with users. That's probably why I often hear, \"You always seem to be the first to try something new.\"",
         ],
       },
-      {
-        title: "Problem definition and user-centered analysis",
-        paragraphs: [
-          "I systematically uncover user pain points with a wide range of qualitative and quantitative methods — journey mapping, interviews, shadowing, surveys, SUS, and A/B testing.",
-          "From in-car voice agents to metaverse exhibitions and cloud migration, I've found the core of the problem in very different domains, surfaced key needs, and shaped the direction of the service.",
-        ],
-      },
-      {
-        title: "Data-driven decisions and hypothesis validation",
-        paragraphs: [
-          "I set data-informed UX hypotheses and validate usability and satisfaction by pairing experiments (A/B tests, surveys) with interviews.",
-          "In a digital exhibition UX study, I used PCA and regression models to identify what drives satisfaction and turned the findings into service improvements.",
-        ],
-      },
-      {
-        title: "Project leadership and stakeholder alignment",
-        paragraphs: [
-          "Working with designers, developers, marketers, and external partners, I've led the whole process — from writing proposals and coordinating schedules to sharing deliverables and gathering feedback.",
-          "As team lead or PM in hackathons, industry–academia collaborations, and corporate projects, I've delivered results on schedule even in complex situations.",
-        ],
-      },
     ],
   },
   {
@@ -84,17 +63,17 @@ export const aboutSections: AboutSection[] = [
         ],
       },
       {
-        title: "I turn what users say into data.",
+        title: "I confirm before I'm convinced.",
         paragraphs: [
-          "To improve GLN International's FAQ, I ran frequency analysis and topic modeling in Python on 3,929 customer inquiries.",
-          "I re-categorized the main inquiry types — payment errors, refunds, limits, verification, how-to — and rewrote every question and sentence of an FAQ that had been written in internal jargon, using the users' own language.",
+          "Even when a hypothesis I've set seems right, I keep it as a hypothesis. When I actually meet users, my initial assumptions get overturned more often than I'd expect.",
+          "The same goes for interpreting results. If a number improves, I look separately at how much of it was really the effect of my work. Rather than talking up results, separating what I've confirmed from what I still don't know helps more with the next decision.",
         ],
       },
       {
-        title: "I build the means to measure first.",
+        title: "I build first, then judge.",
         paragraphs: [
-          "When improving TmaxCloud's pre-sales website, there was no way to collect KPIs, so I set up Google Analytics and Beusable myself. After reworking the CTA buttons and layout, bounce rate dropped 38% and conversion rose 2.3 percentage points.",
-          "At Woowa Brothers, research data was scattered across Google Sheets and Jira and tallied by hand every month. I automated collection and syncing with n8n (refreshed every 15 minutes), defined the key metrics, and shipped it as a research dashboard.",
+          "If the tool I need doesn't exist, I build it myself. Lately, building dashboards and automating operations with AI has greatly cut the time it takes to test an idea.",
+          "But the faster the tools get, the more it matters to decide what to build and what to measure. Even when I hand off the implementation, that judgment stays with me.",
         ],
       },
     ],

@@ -106,37 +106,27 @@ section.about-block { border-top: none; padding-top: 72px; }
 .about-essay p + p { margin-top: 1em; }
 .block-note { margin: 0; max-width: 360px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 
-/* ---------- career ---------- */
-.career-list { border-top: 1px solid var(--line); }
-.career-row { display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 36px 0; border-bottom: 1px solid var(--line); }
-.career-org { display: flex; align-items: flex-start; }
-.career-logo { width: 120px; height: 30px; border-radius: 4px; object-fit: contain; background: var(--paper); }
-.career-role { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.career-role h3 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
-.career-role span { color: var(--muted); font-size: 13px; }
-.career-groups { display: flex; flex-direction: column; gap: 22px; max-width: 640px; }
-.career-group-heading { margin: 0 0 10px; font-size: 14px; font-weight: 700; letter-spacing: -.01em; }
-.career-bullets { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
-.career-bullets li { position: relative; padding-left: 16px; color: var(--muted); font-size: 13.5px; line-height: 1.7; }
-.career-bullets li::before { content: ""; position: absolute; left: 0; top: 9px; width: 4px; height: 4px; border-radius: 50%; background: var(--line-strong); }
-
-.edu-skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 56px; }
-.edu-skill-grid h4 { margin: 0 0 18px; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; color: var(--muted); }
-.edu-item { padding: 16px 0; border-top: 1px solid var(--line); }
-.edu-item:first-of-type { border-top: none; }
-.edu-item strong { display: block; font-size: 14px; font-weight: 700; }
-.edu-item > span { display: block; margin-top: 3px; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
-.edu-item ul { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.edu-item ul li { position: relative; padding-left: 14px; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
-.edu-item ul li::before { content: ""; position: absolute; left: 0; top: 7px; width: 3px; height: 3px; border-radius: 50%; background: var(--line-strong); }
-.skill-group { margin-bottom: 18px; }
-.skill-group p { margin: 0 0 8px; font-size: 12.5px; color: var(--muted); font-weight: 600; }
+/* ---------- about: career / education / awards / skills (same grid as essays) ---------- */
+.about-list { margin: 0; padding: 0; list-style: none; }
+.about-item { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 28px 0; border-top: 1px solid var(--line); }
+.about-item:first-child { border-top: 0; padding-top: 0; }
+.about-item-period { margin: 0; padding-top: 3px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.about-item-title { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+.about-item-sub { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+.about-item-groups { display: flex; flex-direction: column; gap: 22px; margin-top: 18px; }
+.about-item-heading { margin: 0 0 8px; font-size: 15px; font-weight: 600; line-height: 1.6; letter-spacing: -.01em; }
+.about-bullets { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.about-item > div > .about-bullets { margin-top: 14px; }
+.about-bullets li { position: relative; padding-left: 16px; font-size: 15px; line-height: 1.75; }
+.about-bullets li::before { content: ""; position: absolute; left: 2px; top: 11px; width: 4px; height: 4px; border-radius: 50%; background: var(--line-strong); }
+.about-awards { margin: 0; padding: 0; list-style: none; }
+.about-awards li { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding: 16px 0; border-top: 1px solid var(--line); font-size: 15px; font-weight: 600; }
+.about-awards li:first-child { border-top: 0; padding-top: 0; }
+.about-awards .about-item-sub { margin: 0; font-weight: 400; white-space: nowrap; }
+.about-skills { display: flex; flex-direction: column; gap: 22px; }
+.skill-group p { margin: 0 0 10px; font-size: 14px; color: var(--muted); font-weight: 600; }
 .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.skill-tags span { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: 12px; background: var(--surface); }
-.award-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
-.award-list li { font-size: 13px; color: var(--ink); padding-left: 16px; position: relative; }
-.award-list li::before { content: ""; position: absolute; left: 0; top: 6px; width: 4px; height: 4px; border-radius: 50%; background: var(--line-strong); }
-.award-list li span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+.skill-tags span { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: 13px; background: var(--surface); }
 
 /* ---------- gallery ---------- */
 .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 24px; }
@@ -942,15 +932,14 @@ section.about-block { border-top: none; padding-top: 72px; }
   .hero { padding-top: 96px; }
   .hero-foot { align-items: flex-start; }
   section.block { padding: 64px var(--side); }
-  .edu-skill-grid { grid-template-columns: 1fr; gap: 40px; }
   .about-intro, .about-section { grid-template-columns: 1fr; gap: 20px; }
   .about-section { margin-top: 72px; }
   .about-section-heading { position: static; }
   .about-section-content { gap: 44px; }
   .about-intro-text p { font-size: 17px; }
   .about-essay h3 { font-size: 18px; }
-  .career-row { grid-template-columns: 1fr; gap: 14px; }
-  .career-org { flex-direction: row; align-items: center; }
+  .about-item { grid-template-columns: 1fr; gap: 4px; }
+  .about-awards li { flex-direction: column; gap: 2px; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .metric-strip { grid-template-columns: 1fr; }
   .metric-strip div { border-left: none; border-top: 1px solid var(--line); padding-left: var(--side); }
