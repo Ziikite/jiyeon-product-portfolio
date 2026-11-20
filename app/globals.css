@@ -111,11 +111,12 @@ section.about-block { border-top: none; padding-top: 72px; }
 .about-item { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 28px 0; border-top: 1px solid var(--line); }
 .about-item:first-child { border-top: 0; padding-top: 0; }
 .about-item-period { margin: 0; padding-top: 3px; font-size: 13px; font-weight: 500; color: var(--muted); }
+/* 로고는 기간 아래, 너비는 기간 텍스트 폭에 맞춤 */
+.about-item-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: max-content; }
+.about-item-meta .about-item-period { white-space: nowrap; }
+.career-logo { width: 0; min-width: 100%; height: auto; max-width: none; }
 .about-item-title { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
 .about-item-sub { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
-.career-logo { width: 120px; height: 30px; border-radius: 4px; object-fit: contain; object-position: left center; background: var(--paper); }
-.about-item-title:has(.career-logo) + .about-item-sub { margin-top: 8px; }
-.about-item:has(.career-logo) .about-item-period { padding-top: 7px; }
 .about-item-groups { display: flex; flex-direction: column; gap: 22px; margin-top: 18px; }
 .about-item-heading { margin: 0 0 8px; font-size: 15px; font-weight: 600; line-height: 1.6; letter-spacing: -.01em; }
 .about-bullets { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
